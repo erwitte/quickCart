@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QuickCart</title>
+</head>
+<body>
+<label for="username">Username: </label>
+<input type="text" id="username">
+<br>
+<label for="password">Password:</label>
+<input type="password" id="password">
+<br>
+<button onclick="signup()">sign up</button>
+<button onclick="login()">log in</button>
+</body>
+<script>
+    const baseUrl = "http://localhost:8080/";
+    const urlSignUp = baseUrl + "register";
+    const urlLogIn = baseUrl;
+
+    function signup(){
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+    }
+
+    function login(){
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        const data = {
+            username: username,
+            password: password
+        };
+        fetch(urlLogIn, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .catch(error => {
+                console.error("There was an error with the fetch operation: " + error.message);
+            });
+    }
+</script>
+</html>
