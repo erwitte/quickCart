@@ -1,9 +1,6 @@
 package de.hsos.shared;
 
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.HeaderParam;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
@@ -12,7 +9,15 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface KeycloakAPI {
 
     @POST
-    @Path("/users")
+    @Path("/admin/realms/quickcart-realm/users")
     @Consumes(MediaType.APPLICATION_JSON)
     Response createUser(CreateUserDTO newUser, @HeaderParam("Authorization") String bearerToken);
+
+    @POST
+    @Path("/realms/quickcart-realm/protocol/openid-connect/token")
+    ReceiveToken receiveToken(@FormParam("client_id") String client_id,
+                              @FormParam("client_secret") String client_secret,
+                              @FormParam("grant_type") String grant_type,
+                              @FormParam("username") String username,
+                              @FormParam("password") String password);
 }
