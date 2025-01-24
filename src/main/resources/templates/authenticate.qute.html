@@ -17,7 +17,7 @@
 <script>
     const baseUrl = "http://localhost:8080/";
     const urlSignUp = baseUrl + "register";
-    const urlLogIn = baseUrl;
+    const urlLogIn = baseUrl+ "users/e";
 
     function signup(){
         const username = document.getElementById("username").value;
@@ -29,8 +29,15 @@
         const password = document.getElementById("password").value;
 
         const data = {
-            username: username,
-            password: password
+            username: "estF",
+            password: "password",
+            firstName: "firstName",
+            lastName: "lastName",
+            email: "emdsgail@asfaf.de",
+            street: "street",
+            houseNumber: "houseNumber",
+            city: "city",
+            zipCode: "zipCode"
         };
         fetch(urlLogIn, {
             method: 'POST',
