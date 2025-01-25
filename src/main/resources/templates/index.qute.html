@@ -84,7 +84,7 @@
         })
             .then(async response => {
                 const json = await response.json();
-                checkRoles(json.refresh_token);
+                checkRoles(json.access_token);
                 console.log(json);
             })
     }
