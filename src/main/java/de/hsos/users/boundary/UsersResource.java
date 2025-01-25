@@ -82,7 +82,6 @@ public class UsersResource {
         Response wasCreated = keycloakAPI.createUser(newUser, keycloakManagerAccessToken);
         if (wasCreated.getStatus() == 201){
             keycloakManager.logOutManager();
-            System.out.println("podsgfkdsag");
         }
         return wasCreated;
     }
