@@ -97,16 +97,8 @@ public class CreateUserDTO {
         return emailVerified;
     }
 
-    public void setEmailVerified(boolean emailVerified) {
-        this.emailVerified = emailVerified;
-    }
-
     public boolean isEnabled() {
         return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
     }
 
     // Nested class for Credentials
@@ -134,10 +126,6 @@ public class CreateUserDTO {
 
         public String getType() {
             return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
         }
 
         public String getValue() {

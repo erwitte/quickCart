@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Centered Form</title>
+    <title>Registration</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -61,6 +61,14 @@
         <input type="text" id="email" name="email">
     </div>
     <div class="form-row">
+        <label for="firstName">Street:</label>
+        <input type="text" id="firstName" name="firstName">
+    </div>
+    <div class="form-row">
+        <label for="lastName">House number:</label>
+        <input type="text" id="lastName" name="lastName">
+    </div>
+    <div class="form-row">
         <label for="street">Street:</label>
         <input type="text" id="street" name="street">
     </div>
@@ -77,9 +85,37 @@
         <input type="text" id="zip_code" name="zip_code">
     </div>
     <div class="button-row">
-        <button type="button">register</button>
-        <button type="button">cancel</button>
+        <button type="button" onclick="register()">register</button>
+        <button type="button" onclick="window.location.href='/'">cancel</button>
     </div>
 </div>
 </body>
+<script>
+    function register(){
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        const email = document.getElementById("email").value;
+        const firstName = document.getElementById("firstName").value;
+        const lastName = document.getElementById("lastName").value;
+
+        const data = {
+            "credentials": [
+                {
+                    "value": password
+                }
+            ],
+            "username": username,
+            "firstName": firstName,
+            "lastName": lastName,
+            "email": email
+        }
+        fetch("http://localhost:8080/users", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+    }
+</script>
 </html>

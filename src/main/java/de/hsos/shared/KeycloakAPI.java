@@ -20,4 +20,10 @@ public interface KeycloakAPI {
                               @FormParam("grant_type") String grant_type,
                               @FormParam("username") String username,
                               @FormParam("password") String password);
+
+    @POST
+    @Path("/realms/quickcart-realm/protocol/openid-connect/logout")
+    void logout(@FormParam("client_id") String client_id,
+                    @FormParam("client_secret") String client_secret,
+                    @FormParam("refresh_token") String refresh_token);
 }

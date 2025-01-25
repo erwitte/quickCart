@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.hsos.shared.CreateUserDTO;
 import de.hsos.shared.KeycloakAPI;
-import de.hsos.shared.KeycloakManagerDTO;
+import de.hsos.shared.KeycloakManager;
 import de.hsos.shared.ReceiveToken;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
@@ -18,6 +18,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import java.util.Base64;
+
 @Path("/users")
 @RequestScoped
 public class UsersResource {
@@ -26,6 +28,8 @@ public class UsersResource {
     @Inject
     @RestClient
     KeycloakAPI keycloakAPI;
+    @Inject
+    KeycloakManager keycloakManager;
 
     @POST
     @Path("/e")
@@ -53,14 +57,33 @@ public class UsersResource {
     @Path("/est")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response est() throws JsonProcessingException {
-        KeycloakManagerDTO a = new KeycloakManagerDTO();
-        //ReceiveToken sa = keycloakAPI.receiveToken(a);
-        ObjectMapper mapper = new ObjectMapper();
-        KeycloakManagerDTO dto = new KeycloakManagerDTO();
-        String json = mapper.writeValueAsString(dto);
-        System.out.println(json);
-        ReceiveToken sa = keycloakAPI.receiveToken("quarkus-be", "Ffw0GGjHrfTFnLb8mHFlBGLjcIL8hpfO", "password", "sagar", "demo");
-        return Response.ok().entity(json).build();
+    public Response est() {
+        //ReceiveToken sa = keycloakAPI.receiveToken("quarkus-be", "Ffw0GGjHrfTFnLb8mHFlBGLjcIL8hpfO", "password", "keycloak_manager", "password");
+        System.out.println(keycloakManager.getAccessToken());
+        /*String token = sa.getAccess_token();
+        String[] parts = token.split("\\."); // Split token into parts
+
+        // Decode the Payload (2nd part)
+        String payload = new String(Base64.getUrlDecoder().decode(parts[1]));
+
+        // Parse and pretty-print the JSON
+        ObjectMapper mapper1 = new ObjectMapper();
+        Object json = mapper1.readValue(payload, Object.class);
+        String prettyJson = mapper1.writerWithDefaultPrettyPrinter().writeValueAsString(json);
+
+        System.out.println(prettyJson);*/
+        return Response.ok().build();
+    }
+
+    @POST
+    @PermitAll
+    public Response createUser(CreateUserDTO newUser) {
+        String keycloakManagerAccessToken = "Bearer " + keycloakManager.getAccessToken();
+        Response wasCreated = keycloakAPI.createUser(newUser, keycloakManagerAccessToken);
+        if (wasCreated.getStatus() == 201){
+            keycloakManager.logOutManager();
+            System.out.println("podsgfkdsag");
+        }
+        return wasCreated;
     }
 }
