@@ -45,7 +45,7 @@ public class KeycloakManager {
         return token.getAccess_token();
     }
 
-    public void logOutManager(){
-        keycloakAPI.logout(clientId, clientSecret, token.getRefresh_token());
+    public void logOutKeycloakManager(){
+        keycloakAPI.logoutKeycloakManager(clientId, clientSecret, token.getRefresh_token());
     }
 }

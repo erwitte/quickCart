@@ -1,11 +1,8 @@
 package de.hsos.users.boundary;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.hsos.shared.CreateUserDTO;
 import de.hsos.shared.KeycloakAPI;
 import de.hsos.shared.KeycloakManager;
-import de.hsos.shared.ReceiveToken;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import jakarta.annotation.security.PermitAll;
@@ -17,8 +14,6 @@ import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-
-import java.util.Base64;
 
 @Path("/users")
 @RequestScoped
@@ -81,7 +76,7 @@ public class UsersResource {
         String keycloakManagerAccessToken = "Bearer " + keycloakManager.getAccessToken();
         Response wasCreated = keycloakAPI.createUser(newUser, keycloakManagerAccessToken);
         if (wasCreated.getStatus() == 201){
-            keycloakManager.logOutManager();
+            keycloakManager.logOutKeycloakManager();
         }
         return wasCreated;
     }
