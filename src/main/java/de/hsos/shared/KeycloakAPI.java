@@ -15,7 +15,7 @@ public interface KeycloakAPI {
 
     @POST
     @Path("/realms/quickcart-realm/protocol/openid-connect/token")
-    ReceiveToken receiveToken(@FormParam("client_id") String client_id,
+    Response receiveToken(@FormParam("client_id") String client_id,
                               @FormParam("client_secret") String client_secret,
                               @FormParam("grant_type") String grant_type,
                               @FormParam("username") String username,

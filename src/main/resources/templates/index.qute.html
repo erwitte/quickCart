@@ -57,7 +57,7 @@
     <div class="form-row">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username">
-        <button type="button">submit</button>
+        <button type="button" onclick="login()">submit</button>
     </div>
     <div class="form-row">
         <label for="password">Password:</label>
@@ -66,4 +66,59 @@
     </div>
 </div>
 </body>
+<script>
+    function login(){
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        const data = {
+            "username": username,
+            "password": password
+        };
+        fetch("http://localhost:8080/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+            .then(async response => {
+                const json = await response.json();
+                checkRoles(json.refresh_token);
+                console.log(json);
+            })
+    }
+
+    function checkRoles(accessToken) {
+        // Split the token into parts
+        const tokenParts = String(accessToken).split(".");
+        if (tokenParts.length !== 3) {
+            console.error("Invalid token format");
+            return;
+        }
+
+        // Decode the payload (2nd part of the JWT)
+        const payload = JSON.parse(atob(tokenParts[1]));
+
+        // Check for roles in realm_access
+        const realmRoles = payload.realm_access?.roles || [];
+
+        // Check for roles in resource_access (client-specific roles)
+        const clientRoles = payload.resource_access?.["quarkus-be"]?.roles || [];
+
+        console.log("Realm Roles:", realmRoles);
+        console.log("Client Roles:", clientRoles);
+
+        // Check for the custom role "admin"
+        const hasAdminRole =
+            realmRoles.includes("admin") || clientRoles.includes("admin");
+
+        if (hasAdminRole) {
+            console.log("User has the 'admin' role!");
+        } else {
+            console.log("User does not have the 'admin' role.");
+        }
+    }
+
+</script>
 </html>

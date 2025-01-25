@@ -2,6 +2,7 @@ package de.hsos.shared;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @RequestScoped
@@ -41,7 +42,8 @@ public class KeycloakManager {
     }
 
     public String getAccessToken() {
-        this.token = keycloakAPI.receiveToken(clientId, clientSecret, grantType, username, password);
+        Response response = keycloakAPI.receiveToken(clientId, clientSecret, grantType, username, password);
+        this.token = response.readEntity(ReceiveToken.class);
         return token.getAccess_token();
     }
 
