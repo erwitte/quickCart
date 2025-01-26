@@ -56,6 +56,16 @@
         .gear-icon:hover {
             color: #007bff;
         }
+        .cart-icon {
+            margin-right: 10px;
+            color: #333;
+            font-size: 20px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .cart-icon:hover {
+            color: #007bff;
+        }
         .articles {
             display: flex;
             flex-wrap: wrap;
@@ -82,7 +92,7 @@
             color: #28a745;
         }
     </style>
-    <!-- Add Font Awesome for the gear icon -->
+    <!-- Add Font Awesome for the gear and cart icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -92,12 +102,26 @@
     </div>
     <div class="user-info">
         <span>{username}</span>
+        <!-- Shopping cart icon -->
+        <a href="/cart" class="cart-icon">
+            <i class="fas fa-shopping-cart"></i>
+        </a>
         <!-- Gear icon linking to settings -->
         <a href="/settings" class="gear-icon">
             <i class="fas fa-cog"></i>
         </a>
         <button class="logout-button" onclick="logout()">Logout</button>
     </div>
+</div>
+
+<div class="articles">
+    {#for article in articles}
+    <div class="article">
+        <img src="{article.imageUrl}" alt="{article.heading}">
+        <h3>{article.heading}</h3>
+        <p>${article.price}</p>
+    </div>
+    {/for}
 </div>
 
 <script>
