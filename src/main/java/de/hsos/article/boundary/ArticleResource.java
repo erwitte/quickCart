@@ -7,10 +7,7 @@ import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -28,10 +25,18 @@ public class ArticleResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    public Response createArticle(byte[] pic) {
-        Article article = new Article("articleDTO.getHeading()", 1, pic);
-        articleService.createArticle(article);
-        return Response.status(Response.Status.CREATED).entity(article).build();
+    @Path("/{id}")
+    public Response savePicture(@PathParam("id") long id, byte[] picture) {
+        articleService.safePicture(id, picture);
+        return Response.status(Response.Status.CREATED).build();
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response saveArticle(ArticleDTO articleDTO) {
+        Article article = new Article(articleDTO.getHeading(), articleDTO.getPrice());
+        long id = articleService.createArticle(article);
+        return Response.status(Response.Status.CREATED).entity(id).build();
     }
 
     @GET

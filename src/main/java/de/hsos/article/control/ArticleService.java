@@ -3,5 +3,6 @@ package de.hsos.article.control;
 import de.hsos.article.entity.Article;
 
 public interface ArticleService {
-    void createArticle(Article article);
+    long createArticle(Article article);
+    void safePicture(long id, byte[] picture);
 }

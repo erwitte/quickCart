@@ -59,6 +59,8 @@
         const fileInput = document.getElementById('picture');
         const status = document.getElementById('status');
         const error = document.getElementById('error');
+        let articleId;
+        let arrayBuffer;
 
         const price = parseFloat(priceInput);
         if (isNaN(price)) {
@@ -76,49 +78,37 @@
             return;
         }
 
+        const data = {
+            "heading": title,
+            "price": price
+        };
+
         const file = fileInput.files[0];
 
-        // Read the file as a byte array
         const reader = new FileReader();
         reader.onload = function (event) {
-            const arrayBuffer = event.target.result; // Get the file content as an ArrayBuffer
-            const byteArray = new Uint8Array(arrayBuffer); // Convert ArrayBuffer to byte array
+            arrayBuffer = event.target.result; // Get the file content as an ArrayBuffer
 
-            // Prepare the data to send
-            const data = {
-                title: title,
-                price: price,
-                picture: Array.from(byteArray), // Convert Uint8Array to a regular array for JSON
-            };
-            const formData = new FormData();
-            formData.append('title', title);
-            formData.append('price', price);
-            formData.append('picture', fileInput.files[0]);
-            console.log(data);
-            // Send the data to the server
             fetch('http://localhost:8080/articles', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/octet-stream',
+                    "Content-Type": "application/json"
                 },
-                body: arrayBuffer,
+                body: JSON.stringify(data),
             })
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('Failed to upload product.');
-                    }
+                .then(async response => {
+                     articleId = await response.text();
+                    await fetch("http://localhost:8080/articles/" + articleId, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/octet-stream',
+                        },
+                        body: arrayBuffer,
+                    });
                 })
-                .then(result => {
-                    status.textContent = 'Product uploaded successfully!';
-                    console.log('Server response:', result);
-                })
-                .catch(err => {
-                    error.textContent = 'An error occurred while uploading.';
-                    console.error('Error:', err);
-                });
         };
+
+
 
         reader.onerror = function () {
             error.textContent = 'Error reading the file.';

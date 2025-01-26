@@ -18,19 +18,21 @@ public class ArticleRepository implements ArticleService, PanacheRepository<Arti
 
     @Override
     @Transactional
-    public void createArticle(Article article) {
-        ArticleJPAEntity articleEntity = new ArticleJPAEntity(article.heading(), article.price(), article.picture());
-        Path filePath = Paths.get("a.png");
-
-        try {
-            // Write the byte array to the file
-            Files.write(filePath, article.picture());
-            System.out.println("File saved successfully!");
-        } catch (IOException e) {
-            System.err.println("Failed to save the file: " + e.getMessage());
-        }
+    public long createArticle(Article article) {
+        ArticleJPAEntity articleEntity = new ArticleJPAEntity();
+        articleEntity.setHeading(article.heading());
+        articleEntity.setPrice(article.price());
         articleEntity.persist();
-        ArticleJPAEntity a = findById(1L);
+        return articleEntity.id;
+    }
+
+    @Override
+    @Transactional
+    public void safePicture(long id, byte[] picture) {
+        ArticleJPAEntity articleEntity = findById(id);
+        articleEntity.setPicture(picture);
+        articleEntity.persist();
+        ArticleJPAEntity a = findById(id);
         System.out.println(a);
     }
 }

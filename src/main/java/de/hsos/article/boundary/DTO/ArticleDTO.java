@@ -8,7 +8,6 @@ import java.util.Base64;
 public class ArticleDTO {
     private String heading;
     private double price;
-    private byte[] picture;
 
     // Default constructor (required for JSON-B deserialization)
     public ArticleDTO() {
@@ -16,11 +15,9 @@ public class ArticleDTO {
 
     @JsonbCreator
     public ArticleDTO(@JsonbProperty("heading") String heading,
-                      @JsonbProperty("price") double price,
-                      @JsonbProperty("picture") byte[] picture) {
+                      @JsonbProperty("price") double price) {
         this.heading = heading;
         this.price = price;
-        this.picture = picture;
     }
 
     // Getters and setters (required for JSON-B serialization/deserialization)
@@ -38,13 +35,5 @@ public class ArticleDTO {
 
     public void setPrice(double price) {
         this.price = price;
-    }
-
-    public byte[] getPicture() {
-        return picture;
-    }
-
-    public void setPicture(byte[] picture) {
-        this.picture = picture;
     }
 }
