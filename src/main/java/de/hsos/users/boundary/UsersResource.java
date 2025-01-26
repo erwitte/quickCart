@@ -6,6 +6,7 @@ import de.hsos.shared.KeycloakManager;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -13,18 +14,23 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Path("/users")
 @RequestScoped
 public class UsersResource {
     @Inject
-    Template authenticate;
+    Template indexUser;
+    @Inject
+    Template index;
     @Inject
     @RestClient
     KeycloakAPI keycloakAPI;
     @Inject
     KeycloakManager keycloakManager;
+    @Inject
+    JsonWebToken jwt;
 
     @POST
     @Path("/e")
@@ -42,10 +48,17 @@ public class UsersResource {
 
     @GET
     @Produces(MediaType.TEXT_HTML)
-    @PermitAll
-    public Response authenticate(){
-        TemplateInstance renderedTemplate = authenticate.instance();
-        return Response.ok(renderedTemplate.render()).type(MediaType.TEXT_HTML).build();
+    @RolesAllowed("user")
+    public Response indexUser(){
+        String username = jwt.getClaim("preferred_username");
+        if (username == null) {
+            // Handle the case where the claim is missing
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Username not found in token").build();
+        } else {
+            System.out.println("peamtpoatpoamrfoakrüp");
+        }
+        TemplateInstance indexUserInstance = indexUser.data("username", username);
+        return Response.ok(indexUserInstance.render()).type(MediaType.TEXT_HTML).build();
     }
 
     @POST

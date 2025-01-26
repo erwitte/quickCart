@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickCart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+        }
+        .search-bar {
+            flex-grow: 1;
+            margin-right: 20px;
+        }
+        .search-bar input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        .user-info span {
+            margin-right: 10px;
+        }
+        .logout-button {
+            padding: 8px 16px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .logout-button:hover {
+            background-color: #c82333;
+        }
+        .gear-icon {
+            margin-right: 10px;
+            color: #333;
+            font-size: 20px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .gear-icon:hover {
+            color: #007bff;
+        }
+        .articles {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+        .article {
+            width: calc(33.333% - 20px);
+            margin: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .article img {
+            width: 100%;
+            height: auto;
+        }
+        .article h3 {
+            margin: 10px;
+            font-size: 18px;
+        }
+        .article p {
+            margin: 10px;
+            font-size: 16px;
+            color: #28a745;
+        }
+    </style>
+    <!-- Add Font Awesome for the gear icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<div class="header">
+    <div class="search-bar">
+        <input type="text" placeholder="Search articles...">
+    </div>
+    <div class="user-info">
+        <span>{username}</span>
+        <!-- Gear icon linking to settings -->
+        <a href="/settings" class="gear-icon">
+            <i class="fas fa-cog"></i>
+        </a>
+        <button class="logout-button" onclick="logout()">Logout</button>
+    </div>
+</div>
+
+<div class="articles">
+    {#for article in articles}
+    <div class="article">
+        <img src="{article.imageUrl}" alt="{article.heading}">
+        <h3>{article.heading}</h3>
+        <p>${article.price}</p>
+    </div>
+    {/for}
+</div>
+
+<script>
+    function logout() {
+        // Implement logout functionality here
+        alert('Logout clicked');
+    }
+</script>
+</body>
+</html>

@@ -90,6 +90,7 @@
     }
 
     function checkRoles(accessToken) {
+        console.log("access token" + accessToken);
         // Split the token into parts
         const tokenParts = String(accessToken).split(".");
         if (tokenParts.length !== 3) {
@@ -114,11 +115,33 @@
             realmRoles.includes("admin") || clientRoles.includes("admin");
 
         if (hasAdminRole) {
-            console.log("User has the 'admin' role!");
+            // todo admin panel schreiben
+            navigateWithAuth("/admin", accessToken);
         } else {
-            console.log("User does not have the 'admin' role.");
+            navigateWithAuth("/users", accessToken);
         }
     }
 
+    function navigateWithAuth(url, token) {
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: "Bearer " + token,
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    // html aus response parsen
+                    return response.text();
+                }
+            })
+            .then(html => {
+                // aktuelles html dokument ersetzen
+                document.open();
+                document.write(html);
+                document.close();
+            });
+    }
 </script>
 </html>

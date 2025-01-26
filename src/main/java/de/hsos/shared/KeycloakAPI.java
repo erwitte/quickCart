@@ -26,4 +26,5 @@ public interface KeycloakAPI {
     void logoutKeycloakManager(@FormParam("client_id") String client_id,
                                @FormParam("client_secret") String client_secret,
                                @FormParam("refresh_token") String refresh_token);
+
 }
