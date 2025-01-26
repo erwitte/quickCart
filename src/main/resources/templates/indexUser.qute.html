@@ -100,20 +100,25 @@
     </div>
 </div>
 
-<div class="articles">
-    {#for article in articles}
-    <div class="article">
-        <img src="{article.imageUrl}" alt="{article.heading}">
-        <h3>{article.heading}</h3>
-        <p>${article.price}</p>
-    </div>
-    {/for}
-</div>
-
 <script>
     function logout() {
-        // Implement logout functionality here
-        alert('Logout clicked');
+        const storedData = localStorage.getItem("json");
+        const json = JSON.parse(storedData);
+        const data = {
+            "refreshToken": json.refresh_token
+        };
+        console.log(json);
+        fetch("/users/logout", {
+            method: "POST",
+            headers: {
+                Authorization: "Bearer " + json.access_token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                window.location.href="/";
+            });
     }
 </script>
 </body>

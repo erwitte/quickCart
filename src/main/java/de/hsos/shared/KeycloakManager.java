@@ -48,6 +48,6 @@ public class KeycloakManager {
     }
 
     public void logOutKeycloakManager(){
-        keycloakAPI.logoutKeycloakManager(clientId, clientSecret, token.getRefresh_token());
+        keycloakAPI.logout(token.getRefresh_token());
     }
 }

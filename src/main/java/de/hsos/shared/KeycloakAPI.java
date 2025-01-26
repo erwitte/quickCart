@@ -23,8 +23,11 @@ public interface KeycloakAPI {
 
     @POST
     @Path("/realms/quickcart-realm/protocol/openid-connect/logout")
-    void logoutKeycloakManager(@FormParam("client_id") String client_id,
-                               @FormParam("client_secret") String client_secret,
-                               @FormParam("refresh_token") String refresh_token);
+    void logout(@FormParam("client_id") String client_id,
+                @FormParam("client_secret") String client_secret,
+                @FormParam("refresh_token") String refresh_token);
 
+    default void logout(String refresh_token) {
+        logout("quarkus-be", "Ffw0GGjHrfTFnLb8mHFlBGLjcIL8hpfO", refresh_token);
+    }
 }

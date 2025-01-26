@@ -3,6 +3,7 @@ package de.hsos.users.boundary;
 import de.hsos.shared.CreateUserDTO;
 import de.hsos.shared.KeycloakAPI;
 import de.hsos.shared.KeycloakManager;
+import de.hsos.users.boundary.DTO.RefreshTokenDTO;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import jakarta.annotation.security.PermitAll;
@@ -19,6 +20,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Path("/users")
 @RequestScoped
+@RolesAllowed("user")
 public class UsersResource {
     @Inject
     Template indexUser;
@@ -32,33 +34,24 @@ public class UsersResource {
     @Inject
     JsonWebToken jwt;
 
-    @POST
-    @Path("/e")
-    @PermitAll
-    public Response getUsers(CreateUserDTO newUser, @Context HttpHeaders headers) {
-        String authorizationHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
-
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Missing or invalid Authorization header").build();
-        }
-
-        keycloakAPI.createUser(newUser, authorizationHeader);
-        return Response.ok().build();
-    }
 
     @GET
     @Produces(MediaType.TEXT_HTML)
-    @RolesAllowed("user")
     public Response indexUser(){
         String username = jwt.getClaim("preferred_username");
         if (username == null) {
             // Handle the case where the claim is missing
             return Response.status(Response.Status.UNAUTHORIZED).entity("Username not found in token").build();
-        } else {
-            System.out.println("peamtpoatpoamrfoakrüp");
         }
         TemplateInstance indexUserInstance = indexUser.data("username", username);
         return Response.ok(indexUserInstance.render()).type(MediaType.TEXT_HTML).build();
+    }
+
+    @POST
+    @Path("/logout")
+    public Response logOutUser(RefreshTokenDTO refreshTokenDTO){
+        keycloakAPI.logout(refreshTokenDTO.refreshToken());
+        return Response.ok().build();
     }
 
     @POST

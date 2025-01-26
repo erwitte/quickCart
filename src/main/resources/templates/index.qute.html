@@ -84,6 +84,8 @@
         })
             .then(async response => {
                 const json = await response.json();
+                localStorage.setItem("json", JSON.stringify(json));
+                console.log("json: " + json);
                 checkRoles(json.access_token);
                 console.log(json);
             })
