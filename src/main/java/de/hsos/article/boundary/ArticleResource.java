@@ -2,21 +2,21 @@ package de.hsos.article.boundary;
 
 import de.hsos.article.boundary.DTO.ArticleDTO;
 import de.hsos.article.control.ArticleService;
-import de.hsos.article.entity.Article;
+import de.hsos.article.entity.ArticleWithoutImage;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
+import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 @RequestScoped
 @Path("/articles")
+@Authenticated
 public class ArticleResource {
     @Inject
     ArticleService articleService;
@@ -26,20 +26,23 @@ public class ArticleResource {
     @POST
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Path("/{id}")
-    public Response savePicture(@PathParam("id") long id, byte[] picture) {
-        articleService.safePicture(id, picture);
+    @RolesAllowed("admin")
+    public Response savePicture(@PathParam("id") long id, byte[] image) {
+        articleService.safeImage(id, image);
         return Response.status(Response.Status.CREATED).build();
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed("admin")
     public Response saveArticle(ArticleDTO articleDTO) {
-        Article article = new Article(articleDTO.getHeading(), articleDTO.getPrice());
-        long id = articleService.createArticle(article);
+        ArticleWithoutImage articleWithoutImage = new ArticleWithoutImage(articleDTO.getHeading(), articleDTO.getPrice());
+        long id = articleService.createArticle(articleWithoutImage);
         return Response.status(Response.Status.CREATED).entity(id).build();
     }
 
     @GET
+    @PermitAll
     public Response getAllArticles() {
         TemplateInstance fileUploadInstance = fileUpload.instance();
         return Response.ok().entity(fileUploadInstance).build();

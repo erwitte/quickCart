@@ -1,8 +1,12 @@
 package de.hsos.article.control;
 
 import de.hsos.article.entity.Article;
+import de.hsos.article.entity.ArticleWithoutImage;
+
+import java.util.List;
 
 public interface ArticleService {
-    long createArticle(Article article);
-    void safePicture(long id, byte[] picture);
+    long createArticle(ArticleWithoutImage articleWithoutImage);
+    void safeImage(long id, byte[] image);
+    List<Article> getArticles();
 }

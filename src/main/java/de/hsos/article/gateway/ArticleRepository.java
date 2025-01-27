@@ -2,37 +2,46 @@ package de.hsos.article.gateway;
 
 import de.hsos.article.control.ArticleService;
 import de.hsos.article.entity.Article;
+import de.hsos.article.entity.ArticleWithoutImage;
 import de.hsos.article.gateway.DTO.ArticleJPAEntity;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.transaction.Transactional;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequestScoped
 public class ArticleRepository implements ArticleService, PanacheRepository<ArticleJPAEntity> {
 
     @Override
     @Transactional
-    public long createArticle(Article article) {
+    public long createArticle(ArticleWithoutImage articleWithoutImage) {
         ArticleJPAEntity articleEntity = new ArticleJPAEntity();
-        articleEntity.setHeading(article.heading());
-        articleEntity.setPrice(article.price());
+        articleEntity.setHeading(articleWithoutImage.heading());
+        articleEntity.setPrice(articleWithoutImage.price());
         articleEntity.persist();
         return articleEntity.id;
     }
 
     @Override
     @Transactional
-    public void safePicture(long id, byte[] picture) {
+    public void safeImage(long id, byte[] image) {
         ArticleJPAEntity articleEntity = findById(id);
-        articleEntity.setPicture(picture);
+        articleEntity.setImage(image);
         articleEntity.persist();
-        ArticleJPAEntity a = findById(id);
-        System.out.println(a);
+    }
+
+    @Override
+    public List<Article> getArticles(){
+        List<ArticleJPAEntity> articleJPAEntities = listAll();
+        return articleJPAEntities.stream()
+                .map(entity -> new Article(
+                        entity.getHeading(),
+                        entity.getPrice(),
+                        entity.getImage()
+                ))
+                .toList();
     }
 }

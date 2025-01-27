@@ -11,14 +11,14 @@ public class ArticleJPAEntity extends PanacheEntity {
     public String heading;
     public double price;
     @Lob
-    public byte[] picture;
+    public byte[] image;
 
     public ArticleJPAEntity() {}
 
-    public ArticleJPAEntity(String heading, double price, byte[] picture) {
+    public ArticleJPAEntity(String heading, double price, byte[] image) {
         this.heading = heading;
         this.price = price;
-        this.picture = picture;
+        this.image = image;
     }
 
     public String getHeading() {
@@ -37,11 +37,11 @@ public class ArticleJPAEntity extends PanacheEntity {
         this.price = price;
     }
 
-    public byte[] getPicture() {
-        return picture;
+    public byte[] getImage() {
+        return image;
     }
 
-    public void setPicture(byte[] picture) {
-        this.picture = picture;
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 }

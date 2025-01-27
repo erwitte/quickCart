@@ -2,6 +2,7 @@ package de.hsos.article.entity;
 
 public record Article(
         String heading,
-        double price
+        double price,
+        byte[] image
 ) {
 }

@@ -46,7 +46,7 @@
     <h1>Upload Product</h1>
     <input type="text" id="title" placeholder="Product Title">
     <input type="number" id="price" placeholder="Product Price">
-    <input type="file" id="picture" accept="image/*">
+    <input type="file" id="image" accept="image/*">
     <button id="uploadButton">Upload Product</button>
     <p id="status" class="status"></p>
     <p id="error" class="error"></p>
@@ -56,7 +56,7 @@
     document.getElementById('uploadButton').addEventListener('click', function () {
         const title = document.getElementById('title').value;
         const priceInput = document.getElementById('price').value;
-        const fileInput = document.getElementById('picture');
+        const fileInput = document.getElementById('image');
         const status = document.getElementById('status');
         const error = document.getElementById('error');
         let articleId;
@@ -74,7 +74,7 @@
 
         // Validate inputs
         if (!title || !price || fileInput.files.length === 0) {
-            error.textContent = 'Please fill out all fields and select a picture.';
+            error.textContent = 'Please fill out all fields and select a image.';
             return;
         }
 
@@ -107,8 +107,6 @@
                     });
                 })
         };
-
-
 
         reader.onerror = function () {
             error.textContent = 'Error reading the file.';

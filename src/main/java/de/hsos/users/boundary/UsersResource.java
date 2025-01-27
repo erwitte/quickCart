@@ -1,5 +1,7 @@
 package de.hsos.users.boundary;
 
+import de.hsos.article.control.ArticleService;
+import de.hsos.article.entity.Article;
 import de.hsos.shared.CreateUserDTO;
 import de.hsos.shared.KeycloakAPI;
 import de.hsos.shared.KeycloakManager;
@@ -18,6 +20,8 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import java.util.List;
+
 @Path("/users")
 @RequestScoped
 @RolesAllowed("user")
@@ -25,25 +29,27 @@ public class UsersResource {
     @Inject
     Template indexUser;
     @Inject
-    Template index;
-    @Inject
     @RestClient
     KeycloakAPI keycloakAPI;
     @Inject
     KeycloakManager keycloakManager;
     @Inject
     JsonWebToken jwt;
+    @Inject
+    ArticleService articleService;
 
 
     @GET
     @Produces(MediaType.TEXT_HTML)
     public Response indexUser(){
         String username = jwt.getClaim("preferred_username");
+        List<Article> articleList = articleService.getArticles();
         if (username == null) {
             // Handle the case where the claim is missing
             return Response.status(Response.Status.UNAUTHORIZED).entity("Username not found in token").build();
         }
-        TemplateInstance indexUserInstance = indexUser.data("username", username);
+        TemplateInstance indexUserInstance = indexUser.data("username", username)
+                                                        .data("articles", articleList);
         return Response.ok(indexUserInstance.render()).type(MediaType.TEXT_HTML).build();
     }
 
