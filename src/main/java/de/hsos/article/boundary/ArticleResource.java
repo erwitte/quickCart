@@ -10,6 +10,7 @@ import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -46,5 +47,12 @@ public class ArticleResource {
     public Response getAllArticles() {
         TemplateInstance fileUploadInstance = fileUpload.instance();
         return Response.ok().entity(fileUploadInstance).build();
+    }
+
+    @DELETE
+    @RolesAllowed("admin")
+    @Path("/{id}")
+    public void deleteArticle(@PathParam("id") long id) {
+        articleService.deleteArticle(id);
     }
 }

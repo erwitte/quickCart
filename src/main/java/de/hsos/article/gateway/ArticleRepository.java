@@ -43,8 +43,22 @@ public class ArticleRepository implements ArticleService, PanacheRepository<Arti
                 .map(entity -> new Article(
                         entity.getHeading(),
                         entity.getPrice(),
-                        Base64.getEncoder().encodeToString(entity.getImage())
+                        Base64.getEncoder().encodeToString(entity.getImage()),
+                        entity.id
                 ))
                 .toList();
+    }
+
+    @Override
+    public Article getArticle(long id) {
+        ArticleJPAEntity articleEntity = findById(id);
+        return new Article(articleEntity.getHeading(), articleEntity.getPrice(), Base64.getEncoder().encodeToString(articleEntity.getImage()), id);
+    }
+
+    @Override
+    @Transactional
+    public void deleteArticle(long id) {
+        ArticleJPAEntity articleEntity = findById(id);
+        articleEntity.delete();
     }
 }

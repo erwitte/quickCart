@@ -9,4 +9,6 @@ public interface ArticleService {
     long createArticle(ArticleWithoutImage articleWithoutImage);
     void safeImage(long id, byte[] image);
     List<Article> getArticles();
+    Article getArticle(long id);
+    void deleteArticle(long id);
 }
