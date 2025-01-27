@@ -107,15 +107,10 @@
         // Check for roles in resource_access (client-specific roles)
         const clientRoles = payload.resource_access?.["quarkus-be"]?.roles || [];
 
-        console.log("Realm Roles:", realmRoles);
-        console.log("Client Roles:", clientRoles);
-
-        // Check for the custom role "admin"
         const hasAdminRole =
             realmRoles.includes("admin") || clientRoles.includes("admin");
 
         if (hasAdminRole) {
-            // todo admin panel schreiben
             navigateWithAuth("/admin", accessToken);
         } else {
             navigateWithAuth("/users", accessToken);
@@ -141,6 +136,8 @@
                 document.open();
                 document.write(html);
                 document.close();
+
+                window.history.pushState({}, '', url);
             });
     }
 </script>

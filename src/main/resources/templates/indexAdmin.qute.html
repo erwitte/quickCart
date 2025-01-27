@@ -46,6 +46,23 @@
         .logout-button:hover {
             background-color: #c82333;
         }
+        .add-article-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .add-article-button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .add-article-button:hover {
+            background-color: #218838;
+        }
         .articles {
             display: flex;
             flex-wrap: wrap;
@@ -84,6 +101,11 @@
     </div>
 </div>
 
+<!-- Add New Article Button -->
+<div class="add-article-container">
+    <button class="add-article-button" onclick="addNewArticle()">Add New Article</button>
+</div>
+
 <div class="articles">
     {#for articleWithoutImage in articles}
     <div class="articleWithoutImage">
@@ -112,6 +134,38 @@
         })
             .then(response => {
                 window.location.href="/";
+            });
+    }
+
+    function addNewArticle() {
+        // Redirect to the page for adding a new article
+        navigateWithAuth("/admin/file-upload");
+    }
+
+    function navigateWithAuth(url) {
+        const json = JSON.parse(localStorage.getItem("json"));
+        const token = json.access_token;
+        console.log("admin; access-token: " + token);
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: "Bearer " + token,
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    // html aus response parsen
+                    return response.text();
+                }
+            })
+            .then(html => {
+                // aktuelles html dokument ersetzen
+                document.open();
+                document.write(html);
+                document.close();
+
+                window.history.pushState({}, '', url);
             });
     }
 </script>

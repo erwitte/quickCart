@@ -31,6 +31,7 @@ public class ArticleRepository implements ArticleService, PanacheRepository<Arti
         ArticleJPAEntity articleEntity = findById(id);
         articleEntity.setImage(image);
         articleEntity.persist();
+        System.out.println("oidsngdsgodsagosakg");
     }
 
     @Override
