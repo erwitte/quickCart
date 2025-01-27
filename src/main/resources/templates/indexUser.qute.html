@@ -115,11 +115,11 @@
 </div>
 
 <div class="articles">
-    {#for articleWithoutImage in articles}
+    {#for article in articles}
     <div class="articleWithoutImage">
-        <img src="{articleWithoutImage.image}" alt="{articleWithoutImage.heading}">
-        <h3>{articleWithoutImage.heading}</h3>
-        <p>${articleWithoutImage.price}</p>
+        <img src="data:image/png;base64,{article.image}" alt="{article.heading}">
+        <h3>{article.heading}</h3>
+        <p>{article.price}€</p>
     </div>
     {/for}
 </div>

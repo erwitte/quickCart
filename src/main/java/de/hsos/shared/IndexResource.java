@@ -1,5 +1,6 @@
 package de.hsos.shared;
 
+import de.hsos.article.control.ArticleService;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import jakarta.enterprise.context.RequestScoped;
@@ -22,12 +23,14 @@ public class IndexResource {
     @Inject
     @RestClient
     KeycloakAPI keycloakAPI;
+    @Inject
+    ArticleService articleService;
 
     @GET
     @Produces(MediaType.TEXT_HTML)
     public Response index() {
-        TemplateInstance indexInstance = index.instance();
-        return Response.ok(indexInstance.render()).type(MediaType.TEXT_HTML).build();
+        TemplateInstance indexInstance = index.data("articles", articleService.getArticles());
+        return Response.ok(indexInstance).type(MediaType.TEXT_HTML).build();
     }
 
     @GET

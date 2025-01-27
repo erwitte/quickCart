@@ -47,14 +47,14 @@
     <input type="text" id="title" placeholder="Product Title">
     <input type="number" id="price" placeholder="Product Price">
     <input type="file" id="image" accept="image/*">
-    <button id="uploadButton">Upload Product</button>
-    <button id="cancelButton" onclick="window.location.href='/admin'">cancel</button>
+    <button id="uploadButton" onclick="fileUpload()">Upload Product</button>
+    <button id="cancelButton" onclick="cancel()">cancel</button>
     <p id="status" class="status"></p>
     <p id="error" class="error"></p>
 </div>
 
 <script>
-    document.getElementById('uploadButton').addEventListener('click', function () {
+    function fileUpload() {
         const title = document.getElementById('title').value;
         const priceInput = document.getElementById('price').value;
         const fileInput = document.getElementById('image');
@@ -62,6 +62,8 @@
         const error = document.getElementById('error');
         let articleId;
         let arrayBuffer;
+        const json = localStorage.getItem("json");
+        const access_token = JSON.parse(json).access_token;
 
         const price = parseFloat(priceInput);
         if (isNaN(price)) {
@@ -93,7 +95,8 @@
             fetch('http://localhost:8080/articles', {
                 method: 'POST',
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + access_token
                 },
                 body: JSON.stringify(data),
             })
@@ -103,9 +106,17 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/octet-stream',
+                            Authorization: "Bearer " + access_token
                         },
                         body: arrayBuffer,
-                    });
+                    })
+                        .then(response => {
+                            if (response.status === 201){
+                                document.getElementById('title').value = "";
+                                document.getElementById('price').value = "";
+                                document.getElementById('image').value = "";
+                            }
+                        })
                 })
         };
 
@@ -114,7 +125,34 @@
         };
 
         reader.readAsArrayBuffer(file); // Read the file as an ArrayBuffer
-    });
+    }
+
+    function cancel(){
+        const json = JSON.parse(localStorage.getItem("json"));
+        const token = json.access_token;
+        console.log("admin; access-token: " + token);
+        fetch("http://localhost:8080/admin", {
+            method: "GET",
+            headers: {
+                Authorization: "Bearer " + token,
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    // html aus response parsen
+                    return response.text();
+                }
+            })
+            .then(html => {
+                // aktuelles html dokument ersetzen
+                document.open();
+                document.write(html);
+                document.close();
+
+                window.history.pushState({}, '/file-upload', "");
+            });
+    }
 </script>
 </body>
 </html>

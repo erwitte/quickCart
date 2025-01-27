@@ -9,6 +9,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.transaction.Transactional;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,13 +36,14 @@ public class ArticleRepository implements ArticleService, PanacheRepository<Arti
     }
 
     @Override
+    @Transactional
     public List<Article> getArticles(){
         List<ArticleJPAEntity> articleJPAEntities = listAll();
         return articleJPAEntities.stream()
                 .map(entity -> new Article(
                         entity.getHeading(),
                         entity.getPrice(),
-                        entity.getImage()
+                        Base64.getEncoder().encodeToString(entity.getImage())
                 ))
                 .toList();
     }
