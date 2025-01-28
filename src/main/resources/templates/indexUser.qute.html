@@ -101,7 +101,8 @@
 <body>
 <div class="header">
     <div class="search-bar">
-        <input type="text" placeholder="Search articles...">
+        <input id="query" type="text" placeholder="Search articles...">
+        <button onclick="search()">search</button>
     </div>
     <div class="user-info">
         <span>{username}</span>
@@ -134,7 +135,6 @@
         const data = {
             "refreshToken": json.refresh_token
         };
-        console.log(json);
         fetch("/users/logout", {
             method: "POST",
             headers: {
@@ -145,6 +145,34 @@
         })
             .then(response => {
                 window.location.href="/";
+            });
+    }
+
+    function search(){
+        const query = document.getElementById("query").value;
+        const storedData = localStorage.getItem("json");
+        const json = JSON.parse(storedData);
+        const url = "/users/search?article=" + encodeURIComponent(query);
+
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: "Bearer " + json.access_token,
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    // html aus response parsen
+                    return response.text();
+                }
+            })
+            .then(html => {
+                // aktuelles html dokument ersetzen
+                document.open();
+                document.write(html);
+                document.close();
+                window.history.pushState({}, '', url);
             });
     }
 </script>

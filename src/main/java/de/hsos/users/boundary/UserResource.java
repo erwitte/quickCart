@@ -41,6 +41,15 @@ public class UserResource {
     @Inject
     UserService userService;
 
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    @Path("/search")
+    public Response searchArticles(@QueryParam("article") String article) {
+        String username = jwt.getClaim("preferred_username");
+        TemplateInstance indexUserInstance = indexUser.data("username", username)
+                                                        .data("articles", articleService.getArticlesByHeading(article));
+        return Response.ok(indexUserInstance.render()).type(MediaType.TEXT_HTML).build();
+    }
 
     @GET
     @Produces(MediaType.TEXT_HTML)

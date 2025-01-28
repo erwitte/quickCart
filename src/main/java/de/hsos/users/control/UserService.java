@@ -4,4 +4,5 @@ import de.hsos.users.entity.User;
 
 public interface UserService {
     public void createUser(User user);
+    long getUserId(String username);
 }
