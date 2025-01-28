@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Address Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        .form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .form-container h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        .form-row label {
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .form-row input,
+        .form-row select {
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .form-row select {
+            cursor: pointer;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .form-actions button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .form-actions button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h1>Set Your Address</h1>
+    <form id="addressForm">
+        <div class="form-row">
+            <label for="street">Street:</label>
+            <input type="text" id="street" name="street" placeholder="Enter your street" required>
+        </div>
+        <div class="form-row">
+            <label for="houseNumber">House Number:</label>
+            <input type="text" id="houseNumber" name="houseNumber" placeholder="Enter your house number" required>
+        </div>
+        <div class="form-row">
+            <label for="zipCode">ZIP Code:</label>
+            <input type="text" id="zipCode" name="zipCode" placeholder="Enter your ZIP code" required>
+        </div>
+        <div class="form-row">
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" placeholder="Enter your city" required>
+        </div>
+        <div class="form-row">
+            <label for="currency">Currency:</label>
+            <select id="currency" name="currency" required>
+                <option value="EUR">Euro (EUR)</option>
+                <option value="USD">US Dollar (USD)</option>
+                <option value="AUD">Australian Dollar (AUD)</option>
+                <option value="GBP">British Pound (GBP)</option>
+                <option value="CHF">Swiss Franc (CHF)</option>
+            </select>
+        </div>
+        <div class="form-actions">
+            <button type="submit">Submit</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    const form = document.getElementById('addressForm');
+    form.addEventListener('submit', (event) => {
+        event.preventDefault(); // Prevent default form submission
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        console.log('Form Data:', data);
+        alert(`Address submitted:\nStreet: ${data.street}, House No: ${data.houseNumber}, ZIP: ${data.zipCode}, City: ${data.city}, Currency: ${data.currency}`);
+    });
+</script>
+</body>
+</html>
