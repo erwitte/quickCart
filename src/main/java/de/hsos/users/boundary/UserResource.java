@@ -7,6 +7,8 @@ import de.hsos.users.boundary.DTO.CreateUserKeycloakDTO;
 import de.hsos.shared.KeycloakAPI;
 import de.hsos.shared.KeycloakManager;
 import de.hsos.users.boundary.DTO.RefreshTokenDTO;
+import de.hsos.users.control.UserService;
+import de.hsos.users.entity.User;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import jakarta.annotation.security.PermitAll;
@@ -36,6 +38,8 @@ public class UserResource {
     JsonWebToken jwt;
     @Inject
     ArticleService articleService;
+    @Inject
+    UserService userService;
 
 
     @GET
@@ -87,6 +91,7 @@ public class UserResource {
         String keycloakManagerAccessToken = "Bearer " + keycloakManager.getAccessToken();
         Response wasCreated = keycloakAPI.createUser(new CreateUserKeycloakDTO(newUser.getUsername(), newUser.getPassword(),newUser.getEmail()), keycloakManagerAccessToken);
         if (wasCreated.getStatus() == 201){
+            userService.createUser(new User(newUser));
             keycloakManager.logOutKeycloakManager();
         }
         return wasCreated;
