@@ -112,17 +112,23 @@
         const email = document.getElementById("email").value;
         const firstName = document.getElementById("firstName").value;
         const lastName = document.getElementById("lastName").value;
+        const street = document.getElementById("street").value;
+        const houseNumber = document.getElementById("house_number").value;
+        const city = document.getElementById("city").value;
+        const zipCode = document.getElementById("zip_code").value;
+        const currency = document.getElementById("currency").value;
 
         const data = {
-            "credentials": [
-                {
-                    "value": password
-                }
-            ],
             "username": username,
+            "password": password,
             "firstName": firstName,
             "lastName": lastName,
-            "email": email
+            "email": email,
+            "street": street,
+            "houseNumber": houseNumber,
+            "city": city,
+            "zipCode": zipCode,
+            "currency": currency
         };
 
         fetch("http://localhost:8080/users", {

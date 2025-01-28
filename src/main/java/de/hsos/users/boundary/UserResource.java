@@ -2,7 +2,8 @@ package de.hsos.users.boundary;
 
 import de.hsos.article.control.ArticleService;
 import de.hsos.article.entity.Article;
-import de.hsos.shared.CreateUserDTO;
+import de.hsos.users.boundary.DTO.CreateUserDTO;
+import de.hsos.users.boundary.DTO.CreateUserKeycloakDTO;
 import de.hsos.shared.KeycloakAPI;
 import de.hsos.shared.KeycloakManager;
 import de.hsos.users.boundary.DTO.RefreshTokenDTO;
@@ -13,8 +14,6 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -25,7 +24,7 @@ import java.util.List;
 @Path("/users")
 @RequestScoped
 @RolesAllowed("user")
-public class UsersResource {
+public class UserResource {
     @Inject
     Template indexUser;
     @Inject
@@ -86,7 +85,7 @@ public class UsersResource {
     @PermitAll
     public Response createUser(CreateUserDTO newUser) {
         String keycloakManagerAccessToken = "Bearer " + keycloakManager.getAccessToken();
-        Response wasCreated = keycloakAPI.createUser(newUser, keycloakManagerAccessToken);
+        Response wasCreated = keycloakAPI.createUser(new CreateUserKeycloakDTO(newUser.getUsername(), newUser.getPassword(),newUser.getEmail()), keycloakManagerAccessToken);
         if (wasCreated.getStatus() == 201){
             keycloakManager.logOutKeycloakManager();
         }

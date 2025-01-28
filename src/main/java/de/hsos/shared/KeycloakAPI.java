@@ -1,5 +1,6 @@
 package de.hsos.shared;
 
+import de.hsos.users.boundary.DTO.CreateUserKeycloakDTO;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -11,7 +12,7 @@ public interface KeycloakAPI {
     @POST
     @Path("/admin/realms/quickcart-realm/users")
     @Consumes(MediaType.APPLICATION_JSON)
-    Response createUser(CreateUserDTO newUser, @HeaderParam("Authorization") String bearerToken);
+    Response createUser(CreateUserKeycloakDTO newUser, @HeaderParam("Authorization") String bearerToken);
 
     @POST
     @Path("/realms/quickcart-realm/protocol/openid-connect/token")
