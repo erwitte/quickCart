@@ -93,7 +93,6 @@
 <div class="form-container">
     <h1>Settings</h1>
     <h4>only set what is supposed to be updated</h4>
-    <form id="addressForm">
         <div class="form-row">
             <label for="street">Street:</label>
             <input type="text" id="street" name="street" placeholder="Enter your street">
@@ -125,21 +124,39 @@
             <button type="button" onclick="submit()" id="submitBtn">Submit</button>
             <button type="button" onclick="cancel()" id="cancelBtn">cancel</button>
         </div>
-    </form>
 </div>
 
 <script>
-    function submit(){
-        const form = document.getElementById('addressForm');
-        const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries());
-        console.log('Form Data:', data);
+    async function submit(){
+        const street = document.getElementById("street").value;
+        const houseNumber = document.getElementById("houseNumber").value;
+        const city = document.getElementById("city").value;
+        const zipCode = document.getElementById("zipCode").value;
+        const currency = document.getElementById("currency").value;
+        const data = {
+            "street": street,
+            "houseNumber": houseNumber,
+            "zipCode": zipCode,
+            "city": city,
+            "currency": currency
+        };
+        const json = JSON.parse(localStorage.getItem("json"));
+        const token = json.access_token;
+
+        await fetch("http://localhost:8080/users/settings", {
+            method: "PATCH",
+            headers: {
+                Authorization: "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+        cancel();
     }
 
     function cancel(){
         const json = JSON.parse(localStorage.getItem("json"));
         const token = json.access_token;
-        console.log("admin; access-token: " + token);
         fetch("http://localhost:8080/users", {
             method: "GET",
             headers: {

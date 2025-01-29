@@ -2,12 +2,9 @@ package de.hsos.user.boundary;
 
 import de.hsos.article.control.ArticleService;
 import de.hsos.article.entity.Article;
-import de.hsos.user.boundary.DTO.ArticleDTO;
-import de.hsos.user.boundary.DTO.CreateUserDTO;
-import de.hsos.user.boundary.DTO.CreateUserKeycloakDTO;
+import de.hsos.user.boundary.DTO.*;
 import de.hsos.shared.KeycloakAPI;
 import de.hsos.shared.KeycloakManager;
-import de.hsos.user.boundary.DTO.RefreshTokenDTO;
 import de.hsos.user.control.UserService;
 import de.hsos.user.entity.User;
 import io.quarkus.qute.Template;
@@ -133,5 +130,13 @@ public class UserResource {
     public Response settings(){
         TemplateInstance settingsInstance = settingsUser.instance();
         return Response.ok(settingsInstance.render()).type(MediaType.TEXT_HTML).build();
+    }
+
+    @PATCH
+    @Path("/settings")
+    public void updateUserData(UpdateUserDTO updateUserDTO){
+        String username = jwt.getClaim("preferred_username");
+        userService.updateUser(username, updateUserDTO.getStreet(), updateUserDTO.getHouseNumber(),
+                updateUserDTO.getZipCode(), updateUserDTO.getCity(), updateUserDTO.getCurrency());
     }
 }

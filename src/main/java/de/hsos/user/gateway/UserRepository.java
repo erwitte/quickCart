@@ -22,6 +22,29 @@ public class UserRepository implements PanacheRepository<UserJPAEntity>, UserSer
                 userJPAEntity.getZipCode(), userJPAEntity.getHouseNumber(), userJPAEntity.getCurrency());
     }
 
+    @Override
+    @Transactional
+    public void updateUser(String username, String street, String houseNumber,
+                           String zipCode, String city, String currency){
+        UserJPAEntity userJPAEntity = find("username", username).firstResult();
+        if (street != null) {
+            userJPAEntity.setStreet(street);
+        }
+        if (houseNumber != null) {
+            userJPAEntity.setHouseNumber(houseNumber);
+        }
+        if (zipCode != null) {
+            userJPAEntity.setZipCode(zipCode);
+        }
+        if (city != null) {
+            userJPAEntity.setCity(city);
+        }
+        if (currency != null) {
+            userJPAEntity.setCurrency(currency);
+        }
+        userJPAEntity.persist();
+    }
+
     @Transactional
     @Override
     public void createUser(User user) {
