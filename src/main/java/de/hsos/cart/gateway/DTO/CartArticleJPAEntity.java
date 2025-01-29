@@ -1,15 +1,15 @@
-package de.hsos.article.gateway.DTO;
+package de.hsos.cart.gateway.DTO;
 
 import de.hsos.article.entity.Article;
+import de.hsos.article.gateway.DTO.ArticleJPAEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 
 import java.util.Base64;
 
 @Entity(name = "cart_article")
-public class CartArticleJPAEntity extends ArticleJPAEntity{
+public class CartArticleJPAEntity extends ArticleJPAEntity {
     @ManyToOne(cascade = CascadeType.ALL)
     private ArticleJPAEntity article;
     private int quantity;

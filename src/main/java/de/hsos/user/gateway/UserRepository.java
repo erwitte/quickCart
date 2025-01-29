@@ -1,11 +1,9 @@
-package de.hsos.users.gateway;
+package de.hsos.user.gateway;
 
-import de.hsos.article.control.ArticleService;
-import de.hsos.article.control.CartService;
-import de.hsos.article.entity.Cart;
-import de.hsos.users.control.UserService;
-import de.hsos.users.entity.User;
-import de.hsos.users.gateway.DTO.UserJPAEntity;
+import de.hsos.cart.cotrol.CartService;
+import de.hsos.user.control.UserService;
+import de.hsos.user.entity.User;
+import de.hsos.user.gateway.DTO.UserJPAEntity;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -15,6 +13,14 @@ import jakarta.transaction.Transactional;
 public class UserRepository implements PanacheRepository<UserJPAEntity>, UserService {
     @Inject
     CartService cartService;
+
+    @Override
+    public User getUser(String username) {
+        UserJPAEntity userJPAEntity = find("username", username).firstResult();
+        return new User(userJPAEntity.getUsername(), userJPAEntity.getPassword(), userJPAEntity.getFirstName(),
+                userJPAEntity.getLastName(), userJPAEntity.getEmail(), userJPAEntity.getStreet(), userJPAEntity.getCity(),
+                userJPAEntity.getZipCode(), userJPAEntity.getHouseNumber(), userJPAEntity.getCurrency());
+    }
 
     @Transactional
     @Override

@@ -1,4 +1,4 @@
-package de.hsos.users.boundary.DTO;
+package de.hsos.user.boundary.DTO;
 
 import java.util.List;
 

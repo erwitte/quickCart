@@ -4,15 +4,12 @@ import de.hsos.article.control.ArticleService;
 import de.hsos.article.entity.Article;
 import de.hsos.article.entity.ArticleWithoutImage;
 import de.hsos.article.gateway.DTO.ArticleJPAEntity;
-import de.hsos.article.gateway.DTO.CartJPAEntity;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.transaction.Transactional;
 
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequestScoped
 public class ArticleRepository implements ArticleService, PanacheRepository<ArticleJPAEntity> {
@@ -47,7 +44,7 @@ public class ArticleRepository implements ArticleService, PanacheRepository<Arti
     @Override
     @Transactional
     public List<Article> getArticlesByHeading(String query){
-        List<ArticleJPAEntity> articleJPAEntities = find("heading", query).list();
+        List<ArticleJPAEntity> articleJPAEntities = list("heading LIKE ?1", "%" + query + "%");
         return articleJPAEntities.stream()
                 .map(this::articleJPAEntityToArticle)
                 .toList();

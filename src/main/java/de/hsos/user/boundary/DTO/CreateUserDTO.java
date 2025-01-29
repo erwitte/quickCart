@@ -1,4 +1,4 @@
-package de.hsos.users.boundary.DTO;
+package de.hsos.user.boundary.DTO;
 
 import jakarta.json.bind.annotation.JsonbCreator;
 import jakarta.json.bind.annotation.JsonbProperty;

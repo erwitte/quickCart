@@ -1,6 +1,6 @@
 package de.hsos.shared;
 
-import de.hsos.users.boundary.DTO.CreateUserKeycloakDTO;
+import de.hsos.user.boundary.DTO.CreateUserKeycloakDTO;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;

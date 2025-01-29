@@ -1,4 +1,4 @@
-package de.hsos.article.gateway.DTO;
+package de.hsos.cart.gateway.DTO;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.CascadeType;

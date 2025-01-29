@@ -1,4 +1,4 @@
-package de.hsos.article.control;
+package de.hsos.cart.cotrol;
 
 public interface CartService {
     void addArticleToCart(String username, long articleId, int quantity);

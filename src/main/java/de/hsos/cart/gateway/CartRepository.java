@@ -1,9 +1,9 @@
-package de.hsos.article.gateway;
+package de.hsos.cart.gateway;
 
 import de.hsos.article.control.ArticleService;
-import de.hsos.article.control.CartService;
-import de.hsos.article.gateway.DTO.CartArticleJPAEntity;
-import de.hsos.article.gateway.DTO.CartJPAEntity;
+import de.hsos.cart.cotrol.CartService;
+import de.hsos.cart.gateway.DTO.CartArticleJPAEntity;
+import de.hsos.cart.gateway.DTO.CartJPAEntity;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;

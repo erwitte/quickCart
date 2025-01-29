@@ -1,4 +1,4 @@
-package de.hsos.users.gateway.DTO;
+package de.hsos.user.gateway.DTO;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Entity;

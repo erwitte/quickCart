@@ -1,4 +1,6 @@
-package de.hsos.article.entity;
+package de.hsos.cart.entity;
+
+import de.hsos.article.entity.Article;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
-package de.hsos.users.entity;
+package de.hsos.user.entity;
 
-import de.hsos.users.boundary.DTO.CreateUserDTO;
+import de.hsos.user.boundary.DTO.CreateUserDTO;
 
 public class User {
     private String username;

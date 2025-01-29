@@ -1,14 +1,14 @@
-package de.hsos.users.boundary;
+package de.hsos.user.boundary;
 
 import de.hsos.article.control.ArticleService;
 import de.hsos.article.entity.Article;
-import de.hsos.users.boundary.DTO.CreateUserDTO;
-import de.hsos.users.boundary.DTO.CreateUserKeycloakDTO;
+import de.hsos.user.boundary.DTO.CreateUserDTO;
+import de.hsos.user.boundary.DTO.CreateUserKeycloakDTO;
 import de.hsos.shared.KeycloakAPI;
 import de.hsos.shared.KeycloakManager;
-import de.hsos.users.boundary.DTO.RefreshTokenDTO;
-import de.hsos.users.control.UserService;
-import de.hsos.users.entity.User;
+import de.hsos.user.boundary.DTO.RefreshTokenDTO;
+import de.hsos.user.control.UserService;
+import de.hsos.user.entity.User;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import jakarta.annotation.security.PermitAll;
@@ -40,6 +40,7 @@ public class UserResource {
     ArticleService articleService;
     @Inject
     UserService userService;
+    double exchangeRate;
 
     @GET
     @Produces(MediaType.TEXT_HTML)
@@ -56,6 +57,9 @@ public class UserResource {
     public Response indexUser(){
         String username = jwt.getClaim("preferred_username");
         List<Article> articleList = articleService.getArticles();
+        User user = userService.getUser(username);
+        exchangeRate = ExchangeRateService.getExchangeRate(user.getCurrency());
+
         if (username == null) {
             // Handle the case where the claim is missing
             return Response.status(Response.Status.UNAUTHORIZED).entity("Username not found in token").build();

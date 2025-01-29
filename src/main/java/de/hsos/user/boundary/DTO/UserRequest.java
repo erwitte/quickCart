@@ -1,4 +1,4 @@
-package de.hsos.users.boundary.DTO;
+package de.hsos.user.boundary.DTO;
 
 public class UserRequest {
     private String username;
