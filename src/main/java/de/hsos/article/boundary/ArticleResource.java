@@ -1,6 +1,6 @@
 package de.hsos.article.boundary;
 
-import de.hsos.article.boundary.DTO.ArticleDTO;
+import de.hsos.article.boundary.DTO.NewArticleDTO;
 import de.hsos.article.control.ArticleService;
 import de.hsos.article.entity.ArticleWithoutImage;
 import io.quarkus.qute.Template;
@@ -10,7 +10,6 @@ import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -36,8 +35,8 @@ public class ArticleResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed("admin")
-    public Response saveArticle(ArticleDTO articleDTO) {
-        ArticleWithoutImage articleWithoutImage = new ArticleWithoutImage(articleDTO.getHeading(), articleDTO.getPrice());
+    public Response saveArticle(NewArticleDTO newArticleDTO) {
+        ArticleWithoutImage articleWithoutImage = new ArticleWithoutImage(newArticleDTO.getHeading(), newArticleDTO.getPrice());
         long id = articleService.createArticle(articleWithoutImage);
         return Response.status(Response.Status.CREATED).entity(id).build();
     }

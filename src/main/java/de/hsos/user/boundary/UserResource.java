@@ -2,6 +2,7 @@ package de.hsos.user.boundary;
 
 import de.hsos.article.control.ArticleService;
 import de.hsos.article.entity.Article;
+import de.hsos.user.boundary.DTO.ArticleDTO;
 import de.hsos.user.boundary.DTO.CreateUserDTO;
 import de.hsos.user.boundary.DTO.CreateUserKeycloakDTO;
 import de.hsos.shared.KeycloakAPI;
@@ -21,6 +22,8 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @Path("/users")
@@ -52,13 +55,25 @@ public class UserResource {
         return Response.ok(indexUserInstance.render()).type(MediaType.TEXT_HTML).build();
     }
 
+    private List<ArticleDTO> adjustArticleListToExchaneRate(String username) {
+        User user = userService.getUser(username);
+        exchangeRate = ExchangeRateService.getExchangeRate(user.getCurrency());
+        return articleService.getArticles().stream()
+                .map(article -> new ArticleDTO(
+                        article.heading(),
+                        BigDecimal.valueOf(article.price() * exchangeRate)
+                                .setScale(2, RoundingMode.HALF_UP) // Round to 2 decimal places
+                                .doubleValue(),
+                        article.image(), article.id()
+                )).toList();
+    }
+
     @GET
     @Produces(MediaType.TEXT_HTML)
     public Response indexUser(){
         String username = jwt.getClaim("preferred_username");
-        List<Article> articleList = articleService.getArticles();
-        User user = userService.getUser(username);
-        exchangeRate = ExchangeRateService.getExchangeRate(user.getCurrency());
+        List<ArticleDTO> articleList = adjustArticleListToExchaneRate(username);
+
 
         if (username == null) {
             // Handle the case where the claim is missing

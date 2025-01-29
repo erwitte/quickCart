@@ -3,19 +3,17 @@ package de.hsos.article.boundary.DTO;
 import jakarta.json.bind.annotation.JsonbCreator;
 import jakarta.json.bind.annotation.JsonbProperty;
 
-import java.util.Base64;
 
-public class ArticleDTO {
+public class NewArticleDTO {
     private String heading;
     private double price;
 
-    // Default constructor (required for JSON-B deserialization)
-    public ArticleDTO() {
+    public NewArticleDTO() {
     }
 
     @JsonbCreator
-    public ArticleDTO(@JsonbProperty("heading") String heading,
-                      @JsonbProperty("price") double price) {
+    public NewArticleDTO(@JsonbProperty("heading") String heading,
+                         @JsonbProperty("price") double price) {
         this.heading = heading;
         this.price = price;
     }
