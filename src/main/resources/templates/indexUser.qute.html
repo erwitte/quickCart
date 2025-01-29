@@ -111,7 +111,7 @@
             <i class="fas fa-shopping-cart"></i>
         </a>
         <!-- Gear icon linking to settings -->
-        <a href="/settings" class="gear-icon">
+        <a onclick="settings()" class="gear-icon">
             <i class="fas fa-cog"></i>
         </a>
         <button class="logout-button" onclick="logout()">Logout</button>
@@ -173,6 +173,32 @@
                 document.write(html);
                 document.close();
                 window.history.pushState({}, '', url);
+            });
+    }
+
+    function settings(){
+        const storedData = localStorage.getItem("json");
+        const json = JSON.parse(storedData);
+
+        fetch("users/settings", {
+            method: "GET",
+            headers: {
+                Authorization: "Bearer " + json.access_token,
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+            if (response.ok) {
+                // html aus response parsen
+                return response.text();
+            }
+        })
+            .then(html => {
+                // aktuelles html dokument ersetzen
+                document.open();
+                document.write(html);
+                document.close();
+                window.history.pushState({}, '', "/settings");
             });
     }
 </script>

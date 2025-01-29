@@ -16,6 +16,10 @@
             background-color: #f8f9fa;
         }
 
+        h4{
+            text-align: center;
+        }
+
         .form-container {
             background: white;
             padding: 20px;
@@ -72,6 +76,14 @@
             cursor: pointer;
         }
 
+        #cancelBtn{
+            margin-left: 10px;
+        }
+
+        #submitBtn{
+            margin-right: 10px;
+        }
+
         .form-actions button:hover {
             background-color: #0056b3;
         }
@@ -79,27 +91,29 @@
 </head>
 <body>
 <div class="form-container">
-    <h1>Set Your Address</h1>
+    <h1>Settings</h1>
+    <h4>only set what is supposed to be updated</h4>
     <form id="addressForm">
         <div class="form-row">
             <label for="street">Street:</label>
-            <input type="text" id="street" name="street" placeholder="Enter your street" required>
+            <input type="text" id="street" name="street" placeholder="Enter your street">
         </div>
         <div class="form-row">
             <label for="houseNumber">House Number:</label>
-            <input type="text" id="houseNumber" name="houseNumber" placeholder="Enter your house number" required>
+            <input type="text" id="houseNumber" name="houseNumber" placeholder="Enter your house number">
         </div>
         <div class="form-row">
             <label for="zipCode">ZIP Code:</label>
-            <input type="text" id="zipCode" name="zipCode" placeholder="Enter your ZIP code" required>
+            <input type="text" id="zipCode" name="zipCode" placeholder="Enter your ZIP code">
         </div>
         <div class="form-row">
             <label for="city">City:</label>
-            <input type="text" id="city" name="city" placeholder="Enter your city" required>
+            <input type="text" id="city" name="city" placeholder="Enter your city">
         </div>
         <div class="form-row">
             <label for="currency">Currency:</label>
-            <select id="currency" name="currency" required>
+            <select id="currency" name="currency">
+                <option value="" selected>Select a currency (no change)</option>
                 <option value="EUR">Euro (EUR)</option>
                 <option value="USD">US Dollar (USD)</option>
                 <option value="AUD">Australian Dollar (AUD)</option>
@@ -108,20 +122,46 @@
             </select>
         </div>
         <div class="form-actions">
-            <button type="submit">Submit</button>
+            <button type="button" onclick="submit()" id="submitBtn">Submit</button>
+            <button type="button" onclick="cancel()" id="cancelBtn">cancel</button>
         </div>
     </form>
 </div>
 
 <script>
-    const form = document.getElementById('addressForm');
-    form.addEventListener('submit', (event) => {
-        event.preventDefault(); // Prevent default form submission
+    function submit(){
+        const form = document.getElementById('addressForm');
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
         console.log('Form Data:', data);
-        alert(`Address submitted:\nStreet: ${data.street}, House No: ${data.houseNumber}, ZIP: ${data.zipCode}, City: ${data.city}, Currency: ${data.currency}`);
-    });
+    }
+
+    function cancel(){
+        const json = JSON.parse(localStorage.getItem("json"));
+        const token = json.access_token;
+        console.log("admin; access-token: " + token);
+        fetch("http://localhost:8080/users", {
+            method: "GET",
+            headers: {
+                Authorization: "Bearer " + token,
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    // html aus response parsen
+                    return response.text();
+                }
+            })
+            .then(html => {
+                // aktuelles html dokument ersetzen
+                document.open();
+                document.write(html);
+                document.close();
+
+                window.history.pushState({}, '/settings', "");
+            });
+    }
 </script>
 </body>
 </html>

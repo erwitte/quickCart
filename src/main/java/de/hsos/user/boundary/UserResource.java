@@ -33,6 +33,8 @@ public class UserResource {
     @Inject
     Template indexUser;
     @Inject
+    Template settingsUser;
+    @Inject
     @RestClient
     KeycloakAPI keycloakAPI;
     @Inject
@@ -124,5 +126,12 @@ public class UserResource {
             keycloakManager.logOutKeycloakManager();
         }
         return wasCreated;
+    }
+
+    @GET
+    @Path("/settings")
+    public Response settings(){
+        TemplateInstance settingsInstance = settingsUser.instance();
+        return Response.ok(settingsInstance.render()).type(MediaType.TEXT_HTML).build();
     }
 }
