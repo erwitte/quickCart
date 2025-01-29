@@ -104,6 +104,8 @@
         <input id="query" type="text" placeholder="Search articles...">
         <button onclick="search()">search</button>
     </div>
+    <input type="number" id="articleId">
+    <button id="articleIdSendBtn" onclick="addArticleToCart()">add to cart</button>
     <div class="user-info">
         <span>{username}</span>
         <!-- Shopping cart icon -->
@@ -129,6 +131,40 @@
 </div>
 
 <script>
+    function addArticleToCart(){
+        const articleId = document.getElementById("articleId").value;
+        document.getElementById("articleId").value = "";
+        const storedData = localStorage.getItem("json");
+        const json = JSON.parse(storedData);
+
+        fetch("/articles/" + articleId, {
+            method: "GET",
+            headers: {
+                Authorization: "Bearer " + json.access_token,
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+                // article exists
+                if (response.status === 200){
+                    const data = {
+                      "articleId": articleId,
+                      "quantity": 1
+                    };
+                    fetch("/cart", {
+                        method: "PATCH",
+                        headers: {
+                            Authorization: "Bearer " + json.access_token,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(data)
+                    }).then(response => {
+                        console.log(response.status);
+                    })
+                }
+            })
+    }
+
     function logout() {
         const storedData = localStorage.getItem("json");
         const json = JSON.parse(storedData);

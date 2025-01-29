@@ -1,33 +1,26 @@
 package de.hsos.cart.gateway.DTO;
 
-import de.hsos.article.entity.Article;
 import de.hsos.article.gateway.DTO.ArticleJPAEntity;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-
-import java.util.Base64;
 
 @Entity(name = "cart_article")
 public class CartArticleJPAEntity extends ArticleJPAEntity {
-    @ManyToOne(cascade = CascadeType.ALL)
-    private ArticleJPAEntity article;
+    private long articleId;
     private int quantity;
 
     public CartArticleJPAEntity() {}
 
-    public CartArticleJPAEntity(ArticleJPAEntity article, int quantity) {
-        this.article = article;
+    public CartArticleJPAEntity(long articleId, int quantity) {
+        this.articleId = articleId;
         this.quantity = quantity;
     }
 
-    public Article getArticle() {
-        return new Article(article.getHeading(), article.getPrice(),
-                Base64.getEncoder().encodeToString(article.getImage()), article.id);
+    public long getArticleId() {
+        return articleId;
     }
 
-    public void setArticle(ArticleJPAEntity article) {
-        this.article = article;
+    public void setArticleId(long articleId) {
+        this.articleId = articleId;
     }
 
     public int getQuantity() {

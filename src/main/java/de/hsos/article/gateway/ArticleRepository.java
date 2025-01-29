@@ -57,8 +57,12 @@ public class ArticleRepository implements ArticleService, PanacheRepository<Arti
     }
 
     @Override
+    @Transactional
     public Article getArticle(long id) {
         ArticleJPAEntity articleEntity = findById(id);
+        if (articleEntity == null) {
+            return null;
+        }
         return new Article(articleEntity.getHeading(), articleEntity.getPrice(), Base64.getEncoder().encodeToString(articleEntity.getImage()), id);
     }
 

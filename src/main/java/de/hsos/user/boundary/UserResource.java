@@ -1,7 +1,6 @@
 package de.hsos.user.boundary;
 
 import de.hsos.article.control.ArticleService;
-import de.hsos.article.entity.Article;
 import de.hsos.user.boundary.DTO.*;
 import de.hsos.shared.KeycloakAPI;
 import de.hsos.shared.KeycloakManager;
@@ -92,32 +91,11 @@ public class UserResource {
     }
 
     @POST
-    @Path("/est")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response est() {
-        //ReceiveToken sa = keycloakAPI.receiveToken("quarkus-be", "Ffw0GGjHrfTFnLb8mHFlBGLjcIL8hpfO", "password", "keycloak_manager", "password");
-        System.out.println(keycloakManager.getAccessToken());
-        /*String token = sa.getAccess_token();
-        String[] parts = token.split("\\."); // Split token into parts
-
-        // Decode the Payload (2nd part)
-        String payload = new String(Base64.getUrlDecoder().decode(parts[1]));
-
-        // Parse and pretty-print the JSON
-        ObjectMapper mapper1 = new ObjectMapper();
-        Object json = mapper1.readValue(payload, Object.class);
-        String prettyJson = mapper1.writerWithDefaultPrettyPrinter().writeValueAsString(json);
-
-        System.out.println(prettyJson);*/
-        return Response.ok().build();
-    }
-
-    @POST
     @PermitAll
     public Response createUser(CreateUserDTO newUser) {
         String keycloakManagerAccessToken = "Bearer " + keycloakManager.getAccessToken();
-        Response wasCreated = keycloakAPI.createUser(new CreateUserKeycloakDTO(newUser.getUsername(), newUser.getPassword(),newUser.getEmail()), keycloakManagerAccessToken);
+        Response wasCreated = keycloakAPI.createUser(new CreateUserKeycloakDTO(newUser.getUsername(),
+                                                    newUser.getPassword(),newUser.getEmail()), keycloakManagerAccessToken);
         if (wasCreated.getStatus() == 201){
             userService.createUser(new User(newUser));
             keycloakManager.logOutKeycloakManager();

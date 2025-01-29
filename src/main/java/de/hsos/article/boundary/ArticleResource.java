@@ -2,6 +2,7 @@ package de.hsos.article.boundary;
 
 import de.hsos.article.boundary.DTO.NewArticleDTO;
 import de.hsos.article.control.ArticleService;
+import de.hsos.article.entity.Article;
 import de.hsos.article.entity.ArticleWithoutImage;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
@@ -47,6 +48,19 @@ public class ArticleResource {
         TemplateInstance fileUploadInstance = fileUpload.instance();
         return Response.ok().entity(fileUploadInstance).build();
     }
+
+    @GET
+    @Path("/{id}")
+    @RolesAllowed("user")
+    public Response getArticle(@PathParam("id") long id) {
+        Article article = articleService.getArticle(id);
+        if (article == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        NewArticleDTO newArticleDTO = new NewArticleDTO(article.heading(), article.price());
+        return Response.ok().entity(newArticleDTO).build();
+    }
+
 
     @DELETE
     @RolesAllowed("admin")

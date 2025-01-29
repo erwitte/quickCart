@@ -175,8 +175,19 @@
         if (hasAdminRole) {
             navigateWithAuth("/admin", accessToken);
         } else {
+            createCart(accessToken);
             navigateWithAuth("/users", accessToken);
         }
+    }
+
+    function createCart(token){
+        fetch("/cart", {
+            method: "POST",
+            headers: {
+                Authorization: "Bearer " + token,
+                "Content-Type": "application/json"
+            }
+        })
     }
 
     function navigateWithAuth(url, token) {
