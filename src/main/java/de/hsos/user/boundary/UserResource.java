@@ -55,9 +55,8 @@ public class UserResource {
         return Response.ok(indexUserInstance.render()).type(MediaType.TEXT_HTML).build();
     }
 
-    private List<ArticleDTO> adjustArticleListToExchaneRate(String username) {
-        User user = userService.getUser(username);
-        exchangeRate = ExchangeRateService.getExchangeRate(user.getCurrency());
+    private List<ArticleDTO> adjustArticleListToExchaneRate(String currency) {
+        exchangeRate = ExchangeRateService.getExchangeRate(currency);
         return articleService.getArticles().stream()
                 .map(article -> new ArticleDTO(
                         article.heading(),
@@ -72,7 +71,8 @@ public class UserResource {
     @Produces(MediaType.TEXT_HTML)
     public Response indexUser(){
         String username = jwt.getClaim("preferred_username");
-        List<ArticleDTO> articleList = adjustArticleListToExchaneRate(username);
+        User user = userService.getUser(username);
+        List<ArticleDTO> articleList = adjustArticleListToExchaneRate(user.getCurrency());
 
 
         if (username == null) {
@@ -80,7 +80,8 @@ public class UserResource {
             return Response.status(Response.Status.UNAUTHORIZED).entity("Username not found in token").build();
         }
         TemplateInstance indexUserInstance = indexUser.data("username", username)
-                                                        .data("articles", articleList);
+                                                        .data("articles", articleList)
+                                                        .data("currency", user.getCurrency());
         return Response.ok(indexUserInstance.render()).type(MediaType.TEXT_HTML).build();
     }
 
