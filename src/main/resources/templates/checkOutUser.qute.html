@@ -29,7 +29,8 @@
                 })
 
             const cartItem = document.createElement("div");
-            cartItem.className = "cart-item";
+            // neu
+            cartItem.classList.add("cart-item");
             cartItem.innerHTML = '<div class="details"> <strong>' + heading + '</strong> - ' + price + ' </div> <div class="quantity">' + quantity + '</div>';
             cartItemsContainer.appendChild(cartItem);
         }
@@ -110,7 +111,7 @@
     <h1>Checkout</h1>
 
 
-    <div class="cart-item" id="cart-items">
+    <div id="cart-items">
         {#for article in articles}
         <script>fillTable({article.id}, {article.quantity})</script>
         {/for}
