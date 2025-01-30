@@ -5,42 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuickCart Checkout</title>
     <script>
-        function getHeading(id){
+        async function fillTable(id, quantity){
             const json = localStorage.getItem("json");
             const access_token = JSON.parse(json).access_token;
+            const cartItemsContainer = document.getElementById("cart-items");
+            let heading;
+            let price;
 
-            fetch("/articles/" + id, {
+            await fetch("/articles/" + id, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: "Bearer " + access_token
                 }
             })
-                .then(response => {
-                    return response.json();
+                .then(async response => {
+                    return await response.json();
                 })
                 .then(article => {
-                    return article.heading;
+                    heading = article.heading;
+                    price = article.price;
+                    console.log("heading: " + heading + " price: " + price);
                 })
-        }
 
-        function getPrice(id){
-            const json = localStorage.getItem("json");
-            const access_token = JSON.parse(json).access_token;
-
-            fetch("/articles/" + id, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: "Bearer " + access_token
-                }
-            })
-                .then(response => {
-                    return response.json();
-                })
-                .then(article => {
-                    return article.price;
-                })
+            const cartItem = document.createElement("div");
+            cartItem.className = "cart-item";
+            cartItem.innerHTML = '<div class="details"> <strong>' + heading + '</strong> - ' + price + ' </div> <div class="quantity">' + quantity + '</div>';
+            cartItemsContainer.appendChild(cartItem);
         }
     </script>
     <style>
@@ -118,14 +109,13 @@
 <div class="checkout-container">
     <h1>Checkout</h1>
 
-    {#for article in articles}
-    <div class="cart-item">
-        <div class="details">
-            <strong><script>getHeading({article.id})</script></strong> - <script>getPrice({article.id})</script>€
-        </div>
-        <div class="quantity">x {article.quantity}</div>
+
+    <div class="cart-item" id="cart-items">
+        {#for article in articles}
+        <script>fillTable({article.id}, {article.quantity})</script>
+        {/for}
     </div>
-    {/for}
+
 
     <div class="total">Total: <strong>${total}€</strong></div>
 
