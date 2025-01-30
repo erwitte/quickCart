@@ -1,10 +1,10 @@
 package de.hsos.cart.gateway.DTO;
 
-import de.hsos.article.gateway.DTO.ArticleJPAEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Entity;
 
 @Entity(name = "cart_article")
-public class CartArticleJPAEntity extends ArticleJPAEntity {
+public class CartArticleJPAEntity extends PanacheEntity {
     private long articleId;
     private int quantity;
 

@@ -4,16 +4,16 @@ import jakarta.json.bind.annotation.JsonbCreator;
 import jakarta.json.bind.annotation.JsonbProperty;
 
 
-public class NewArticleDTO {
+public class ArticleDTO {
     private String heading;
     private double price;
 
-    public NewArticleDTO() {
+    public ArticleDTO() {
     }
 
     @JsonbCreator
-    public NewArticleDTO(@JsonbProperty("heading") String heading,
-                         @JsonbProperty("price") double price) {
+    public ArticleDTO(@JsonbProperty("id") String heading,
+                      @JsonbProperty("price") double price) {
         this.heading = heading;
         this.price = price;
     }

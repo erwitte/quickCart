@@ -45,7 +45,7 @@ public class ArticleRepository implements ArticleService, PanacheRepository<Arti
     @Transactional
     public List<Article> getArticlesByHeading(String query){
         // returns all articles that contain the query
-        List<ArticleJPAEntity> articleJPAEntities = list("heading LIKE ?1", "%" + query + "%");
+        List<ArticleJPAEntity> articleJPAEntities = list("id LIKE ?1", "%" + query + "%");
         return articleJPAEntities.stream()
                 .map(this::articleJPAEntityToArticle)
                 .toList();

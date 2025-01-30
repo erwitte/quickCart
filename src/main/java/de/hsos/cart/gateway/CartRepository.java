@@ -1,12 +1,14 @@
 package de.hsos.cart.gateway;
 
 import de.hsos.cart.cotrol.CartService;
+import de.hsos.cart.entity.Cart;
 import de.hsos.cart.gateway.DTO.CartArticleJPAEntity;
 import de.hsos.cart.gateway.DTO.CartJPAEntity;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.transaction.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RequestScoped
@@ -33,5 +35,16 @@ public class CartRepository implements CartService, PanacheRepository<CartJPAEnt
     public void createCart(String username){
         CartJPAEntity cartEntity = new CartJPAEntity(username);
         cartEntity.persist();
+    }
+
+    @Override
+    public Cart getCart(String username){
+        CartJPAEntity cartEntity = find("username", username).firstResult();
+        List<CartArticleJPAEntity> cartArticles = cartEntity.getArticles();
+        Cart cart = new Cart(new HashMap<>());
+        for (CartArticleJPAEntity cartArticle : cartArticles) {
+            cart.articleIdAndQuantity().put(cartArticle.getArticleId(), cartArticle.getQuantity());
+        }
+        return cart;
     }
 }

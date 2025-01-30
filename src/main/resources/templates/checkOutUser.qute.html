@@ -3,7 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Webshop Checkout</title>
+    <title>QuickCart Checkout</title>
+    <script>
+        function getHeading(id){
+            const json = localStorage.getItem("json");
+            const access_token = JSON.parse(json).access_token;
+
+            fetch("/articles/" + id, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + access_token
+                }
+            })
+                .then(response => {
+                    return response.json();
+                })
+                .then(article => {
+                    return article.heading;
+                })
+        }
+
+        function getPrice(id){
+            const json = localStorage.getItem("json");
+            const access_token = JSON.parse(json).access_token;
+
+            fetch("/articles/" + id, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + access_token
+                }
+            })
+                .then(response => {
+                    return response.json();
+                })
+                .then(article => {
+                    return article.price;
+                })
+        }
+    </script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -82,7 +121,7 @@
     {#for article in articles}
     <div class="cart-item">
         <div class="details">
-            <strong>{article.heading}</strong> - ${article.price}€
+            <strong><script>getHeading({article.id})</script></strong> - <script>getPrice({article.id})</script>€
         </div>
         <div class="quantity">x {article.quantity}</div>
     </div>

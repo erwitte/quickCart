@@ -109,7 +109,7 @@
     <div class="user-info">
         <span>{username}</span>
         <!-- Shopping cart icon -->
-        <a href="/cart" class="cart-icon">
+        <a onclick="getCart()" class="cart-icon">
             <i class="fas fa-shopping-cart"></i>
         </a>
         <!-- Gear icon linking to settings -->
@@ -131,6 +131,33 @@
 </div>
 
 <script>
+    function getCart(){
+        const storedData = localStorage.getItem("json");
+        const json = JSON.parse(storedData);
+
+        fetch("/cart", {
+            method: "GET",
+            headers: {
+                Authorization: "Bearer " + json.access_token,
+                "Content-Type": "application/json"
+            }
+        })
+                .then(response => {
+                    if (response.ok) {
+                        // html aus response parsen
+                        return response.text();
+                    }
+                })
+                .then(html => {
+                    // aktuelles html dokument ersetzen
+                    document.open();
+                    document.write(html);
+                    document.close();
+                    window.history.pushState({}, '', "/cart");
+                })
+
+    }
+
     function addArticleToCart(){
         const articleId = document.getElementById("articleId").value;
         document.getElementById("articleId").value = "";

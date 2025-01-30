@@ -1,6 +1,6 @@
 package de.hsos.article.boundary;
 
-import de.hsos.article.boundary.DTO.NewArticleDTO;
+import de.hsos.article.boundary.DTO.ArticleDTO;
 import de.hsos.article.control.ArticleService;
 import de.hsos.article.entity.Article;
 import de.hsos.article.entity.ArticleWithoutImage;
@@ -36,8 +36,8 @@ public class ArticleResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed("admin")
-    public Response saveArticle(NewArticleDTO newArticleDTO) {
-        ArticleWithoutImage articleWithoutImage = new ArticleWithoutImage(newArticleDTO.getHeading(), newArticleDTO.getPrice());
+    public Response saveArticle(ArticleDTO articleDTO) {
+        ArticleWithoutImage articleWithoutImage = new ArticleWithoutImage(articleDTO.getHeading(), articleDTO.getPrice());
         long id = articleService.createArticle(articleWithoutImage);
         return Response.status(Response.Status.CREATED).entity(id).build();
     }
@@ -57,8 +57,8 @@ public class ArticleResource {
         if (article == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        NewArticleDTO newArticleDTO = new NewArticleDTO(article.heading(), article.price());
-        return Response.ok().entity(newArticleDTO).build();
+        ArticleDTO articleDTO = new ArticleDTO(article.heading(), article.price());
+        return Response.ok().entity(articleDTO).build();
     }
 
 

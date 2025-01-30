@@ -1,8 +1,8 @@
 package de.hsos.cart.entity;
 
-import java.util.List;
+import java.util.Map;
 
 public record Cart(
-        List<Long> articleId
+        Map<Long, Integer> articleIdAndQuantity
 ) {
 }
