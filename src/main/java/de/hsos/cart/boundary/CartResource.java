@@ -59,8 +59,7 @@ public class CartResource {
                     return new ArticleCartDTO(articleId, quantity);
                 })
                 .toList();
-        TemplateInstance checkOutInstance = checkOutUser.data("articles", articlesInCart)
-                .data("total", 2);
+        TemplateInstance checkOutInstance = checkOutUser.data("articles", articlesInCart);
        return Response.ok(checkOutInstance).build();
     }
 }

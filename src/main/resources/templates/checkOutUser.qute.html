@@ -34,6 +34,32 @@
             cartItem.innerHTML = '<div class="details"> <strong>' + heading + '</strong> - ' + price + ' </div> <div class="quantity">' + quantity + '</div>';
             cartItemsContainer.appendChild(cartItem);
         }
+
+        function cancel(){
+            const json = JSON.parse(localStorage.getItem("json"));
+            const token = json.access_token;
+            fetch("http://localhost:8080/users", {
+                method: "GET",
+                headers: {
+                    Authorization: "Bearer " + token,
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // html aus response parsen
+                        return response.text();
+                    }
+                })
+                .then(html => {
+                    // aktuelles html dokument ersetzen
+                    document.open();
+                    document.write(html);
+                    document.close();
+
+                    window.history.pushState({}, '/cart', "");
+                });
+        }
     </script>
     <style>
         body {
@@ -117,10 +143,8 @@
         {/for}
     </div>
 
-
-    <div class="total">Total: <strong>${total}€</strong></div>
-
     <button class="checkout-button">Proceed to Payment</button>
+    <button id="cancelButton" onclick="cancel()">cancel</button>
 </div>
 
 </body>
