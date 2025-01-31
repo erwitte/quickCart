@@ -8,11 +8,24 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.transaction.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 @RequestScoped
 public class CartRepository implements CartService, PanacheRepository<CartJPAEntity> {
+
+    @Override
+    @Transactional
+    public void checkoutCart(String username){
+        CartJPAEntity cartJPAEntity = find("username", username).firstResult();
+        for (CartArticleJPAEntity article : cartJPAEntity.getArticles()) {
+            article.delete();  // Panache way to delete entity
+        }
+
+        cartJPAEntity.getArticles().clear();
+        cartJPAEntity.persist();
+    }
 
     @Override
     @Transactional

@@ -9,10 +9,8 @@ import io.quarkus.qute.TemplateInstance;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.PATCH;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
@@ -51,7 +49,8 @@ public class CartResource {
     }
 
     @GET
-    public Response getCheckOut(){
+    @Produces(MediaType.TEXT_HTML)
+    public Response getCheckOutpage(){
         List<ArticleCartDTO> articlesInCart = getCart().articleIdAndQuantity().entrySet().stream()
                 .map(entry -> {
                     long articleId = entry.getKey();
@@ -61,5 +60,12 @@ public class CartResource {
                 .toList();
         TemplateInstance checkOutInstance = checkOutUser.data("articles", articlesInCart);
        return Response.ok(checkOutInstance).build();
+    }
+
+    @POST
+    @Path("/checkout")
+    public void checkOut(){
+        String username = jwt.getClaim("preferred_username");
+        cartService.checkoutCart(username);
     }
 }
