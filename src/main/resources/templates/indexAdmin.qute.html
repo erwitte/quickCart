@@ -116,6 +116,29 @@
         .number-input-container button:hover {
             background-color: #0056b3;
         }
+
+        .navigation {
+            display: flex;
+            align-items: center;
+            margin-left: auto; /* Pushes navigation to the right */
+        }
+
+        .page-size {
+            width: 60px;
+            margin-right: 10px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .nav-arrow {
+            font-size: 24px;
+            margin: 0 10px;
+            cursor: pointer;
+            color: #333;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -128,6 +151,12 @@
     <div class="number-input-container">
         <input type="number" id="id" placeholder="ID" min="1">
         <button onclick="deleteById()">delete by id</button>
+    </div>
+
+    <div class="navigation">
+        <input type="number" id="pageSize" class="page-size" value="10" min="1" onchange="changePageSize()">
+        <a class="nav-arrow" onclick="prevPage()">←</a>
+        <a class="nav-arrow" onclick="nextPage()">→</a>
     </div>
 
     <div class="user-info">

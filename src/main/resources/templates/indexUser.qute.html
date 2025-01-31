@@ -94,6 +94,28 @@
             font-size: 16px;
             color: #28a745;
         }
+        .navigation {
+            display: flex;
+            align-items: center;
+            margin-left: auto; /* Pushes navigation to the right */
+        }
+
+        .page-size {
+            width: 60px;
+            margin-right: 10px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .nav-arrow {
+            font-size: 24px;
+            margin: 0 10px;
+            cursor: pointer;
+            color: #333;
+            text-decoration: none;
+        }
     </style>
     <!-- Add Font Awesome for the gear and cart icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -106,6 +128,13 @@
     </div>
     <input type="number" id="articleId">
     <button id="articleIdSendBtn" onclick="addArticleToCart()">add to cart</button>
+
+    <div class="navigation">
+        <input type="number" id="pageSize" class="page-size" value="10" min="1" onchange="changePageSize()">
+        <a class="nav-arrow" onclick="prevPage()">←</a>
+        <a class="nav-arrow" onclick="nextPage()">→</a>
+    </div>
+
     <div class="user-info">
         <span>{username}</span>
         <!-- Shopping cart icon -->
