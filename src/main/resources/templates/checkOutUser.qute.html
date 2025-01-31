@@ -60,6 +60,32 @@
                     window.history.pushState({}, '/cart', "");
                 });
         }
+
+        function userDetails(){
+            const json = JSON.parse(localStorage.getItem("json"));
+            const token = json.access_token;
+            fetch("http://localhost:8080/users/details", {
+                method: "GET",
+                headers: {
+                    Authorization: "Bearer " + token,
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // html aus response parsen
+                        return response.text();
+                    }
+                })
+                .then(html => {
+                    // aktuelles html dokument ersetzen
+                    document.open();
+                    document.write(html);
+                    document.close();
+
+                    window.history.pushState({}, '', "/details");
+                });
+        }
     </script>
     <style>
         body {
@@ -143,7 +169,7 @@
         {/for}
     </div>
 
-    <button class="checkout-button">Proceed to Payment</button>
+    <button class="checkout-button" onclick="userDetails()">Proceed</button>
     <button id="cancelButton" onclick="cancel()">cancel</button>
 </div>
 

@@ -31,6 +31,8 @@ public class UserResource {
     @Inject
     Template settingsUser;
     @Inject
+    Template userDetails;
+    @Inject
     @RestClient
     KeycloakAPI keycloakAPI;
     @Inject
@@ -116,5 +118,16 @@ public class UserResource {
         String username = jwt.getClaim("preferred_username");
         userService.updateUser(username, updateUserDTO.getStreet(), updateUserDTO.getHouseNumber(),
                 updateUserDTO.getZipCode(), updateUserDTO.getCity(), updateUserDTO.getCurrency());
+    }
+
+    @GET
+    @Path("/details")
+    @Produces(MediaType.TEXT_HTML)
+    public Response getUserDetails(){
+        String username = jwt.getClaim("preferred_username");
+        User user = userService.getUser(username);
+        UserDetailsDTO userDetailsDTO = Converter.userToUserDetailsDTO(user);
+        TemplateInstance userDetailsInstance = userDetails.data("userDetails", userDetailsDTO);
+        return Response.ok(userDetailsInstance.render()).type(MediaType.TEXT_HTML).build();
     }
 }
