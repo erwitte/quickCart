@@ -94,7 +94,12 @@ public class UserResource {
         String username = jwt.getClaim("preferred_username");
         User user = userService.getUser(username);
         List<ArticleDTO> articleList = adjustArticleListToExchaneRate(user.getCurrency());
-        List<ArticleDTO> pagedArticleList = getPagedArticleList(page, pageSize, articleList);
+        List<ArticleDTO> pagedArticleList = Collections.emptyList();
+        try {
+            pagedArticleList = getPagedArticleList(page, pageSize, articleList);
+        } catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+        }
 
         if (username == null) {
             // Handle the case where the claim is missing

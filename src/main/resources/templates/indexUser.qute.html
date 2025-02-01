@@ -117,7 +117,6 @@
             text-decoration: none;
         }
     </style>
-    <!-- Add Font Awesome for the gear and cart icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -131,8 +130,8 @@
 
     <div class="navigation">
         <input type="number" id="pageSize" class="page-size" value="10" min="1" onchange="changePageSize()">
-        <a class="nav-arrow" onclick="prevPage()">←</a>
-        <a class="nav-arrow" onclick="nextPage()">→</a>
+        <a class="nav-arrow" onclick="getPreviousPage()">←</a>
+        <a class="nav-arrow" onclick="getNextPage()">→</a>
     </div>
 
     <div class="user-info">
@@ -160,6 +159,55 @@
 </div>
 
 <script>
+    function pagingFunction(page, pageSize){
+        const storedData = localStorage.getItem("json");
+        const access_token = JSON.parse(storedData).access_token;
+        const url = "/users?page=" + page + "&pageSize=" + pageSize;
+        fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: "Bearer " + access_token,
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    // html aus response parsen
+                    return response.text();
+                }
+            })
+            .then(html => {
+                // aktuelles html dokument ersetzen
+                document.open();
+                document.write(html);
+                document.close();
+
+                window.history.pushState({}, '', url);
+            });
+    }
+
+    function getNextPage(){
+        const urlParams = new URLSearchParams(window.location.search);
+        let page = parseInt(urlParams.get("page")) || 1; // default to 1
+        let pageSize;
+        if (document.getElementById("pageSize").value === "" || document.getElementById("pageSize").value < 1){
+            pageSize = parseInt(urlParams.get("pageSize")) || 9; //default to 9
+        } else {
+            pageSize = document.getElementById("pageSize").value;
+        }
+        pagingFunction(++page, pageSize);
+    }
+
+    function getPreviousPage(){
+        const urlParams = new URLSearchParams(window.location.search);
+        let page = parseInt(urlParams.get("page")) || 1; // default to 1
+        if (page === 1){
+            return;
+        }
+        let pageSize = parseInt(urlParams.get("pageSize")) || 9; //default to 9
+        pagingFunction(--page, pageSize);
+    }
+
     function getCart(){
         const storedData = localStorage.getItem("json");
         const json = JSON.parse(storedData);
