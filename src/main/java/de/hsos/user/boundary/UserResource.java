@@ -20,6 +20,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Collections;
 import java.util.List;
 
 @Path("/users")
@@ -61,26 +62,46 @@ public class UserResource {
                 .map(article -> new ArticleDTO(
                         article.heading(),
                         BigDecimal.valueOf(article.price() * exchangeRate)
-                                .setScale(2, RoundingMode.HALF_UP) // Round to 2 decimal places
+                                .setScale(2, RoundingMode.HALF_UP) // round to two decimal places
                                 .doubleValue(),
                         article.image(), article.id()
                 )).toList();
     }
 
+    private List<ArticleDTO> getPagedArticleList(int page, int pageSize, List<ArticleDTO> articles) {
+        // validation
+        if (pageSize <= 0) {
+            throw new IllegalArgumentException("Page size must be greater than zero.");
+        }
+        if (page < 1) {
+            throw new IllegalArgumentException("Page number must be at least 1.");
+        }
+        int fromIndex = (page - 1) * pageSize;
+        int toIndex = Math.min(fromIndex + pageSize, articles.size());
+        if (fromIndex >= articles.size()) {
+            return Collections.emptyList(); // Return empty list if page exceeds available items
+        }
+
+        return articles.subList(fromIndex, toIndex);
+    }
+
     @GET
     @Produces(MediaType.TEXT_HTML)
-    public Response indexUser(){
+    public Response indexUser(
+            @QueryParam("page") @DefaultValue("1") int page,
+            @QueryParam("pageSize") @DefaultValue("9") int pageSize
+    ){
         String username = jwt.getClaim("preferred_username");
         User user = userService.getUser(username);
         List<ArticleDTO> articleList = adjustArticleListToExchaneRate(user.getCurrency());
-
+        List<ArticleDTO> pagedArticleList = getPagedArticleList(page, pageSize, articleList);
 
         if (username == null) {
             // Handle the case where the claim is missing
             return Response.status(Response.Status.UNAUTHORIZED).entity("Username not found in token").build();
         }
         TemplateInstance indexUserInstance = indexUser.data("username", username)
-                                                        .data("articles", articleList)
+                                                        .data("articles", pagedArticleList)
                                                         .data("currency", user.getCurrency());
         return Response.ok(indexUserInstance.render()).type(MediaType.TEXT_HTML).build();
     }
