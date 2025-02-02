@@ -1,6 +1,7 @@
 package de.hsos.user.boundary;
 
 import de.hsos.article.control.ArticleService;
+import de.hsos.article.entity.Article;
 import de.hsos.user.boundary.DTO.*;
 import de.hsos.shared.KeycloakAPI;
 import de.hsos.shared.KeycloakManager;
@@ -51,14 +52,17 @@ public class UserResource {
     @Path("/search")
     public Response searchArticles(@QueryParam("article") String article) {
         String username = jwt.getClaim("preferred_username");
+        User user = userService.getUser(username);
+        List<ArticleDTO> articleList = adjustArticleListToExchaneRate(user.getCurrency(), articleService.getArticlesByHeading(article));
         TemplateInstance indexUserInstance = indexUser.data("username", username)
-                                                        .data("articles", articleService.getArticlesByHeading(article));
+                                                        .data("articles", articleList)
+                                                                .data("currency", user.getCurrency());
         return Response.ok(indexUserInstance.render()).type(MediaType.TEXT_HTML).build();
     }
 
-    private List<ArticleDTO> adjustArticleListToExchaneRate(String currency) {
+    private List<ArticleDTO> adjustArticleListToExchaneRate(String currency, List<Article> articles) {
         exchangeRate = ExchangeRateService.getExchangeRate(currency);
-        return articleService.getArticles().stream()
+        return articles.stream()
                 .map(article -> new ArticleDTO(
                         article.heading(),
                         BigDecimal.valueOf(article.price() * exchangeRate)
@@ -93,7 +97,7 @@ public class UserResource {
     ){
         String username = jwt.getClaim("preferred_username");
         User user = userService.getUser(username);
-        List<ArticleDTO> articleList = adjustArticleListToExchaneRate(user.getCurrency());
+        List<ArticleDTO> articleList = adjustArticleListToExchaneRate(user.getCurrency(), articleService.getArticles());
         List<ArticleDTO> pagedArticleList = Collections.emptyList();
         try {
             pagedArticleList = getPagedArticleList(page, pageSize, articleList);
