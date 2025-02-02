@@ -99,20 +99,22 @@
 <body>
 
 <div class="article-container">
-    <h1 class="article-heading">{article.heading}</h1>
+    <h1 class="article-heading">{article.heading()}</h1>
 
     <img class="article-image" src="data:image/png;base64,{article.image}" alt="{article.heading}">
 
-    <p class="article-price">{article.price} {currency}</p>
+    <p class="article-price">{article.price()} currency</p>
+
+    <p><strong>ID:</strong> {article.id}</p>
 
     <div class="ratings-container">
         <h3>Ratings</h3>
-        {#if ratings.isEmpty}
+        {#if article.ratings().isEmpty}
         <p class="no-ratings">No ratings yet.</p>
         {#else}
-        {#for rating in ratings}
+        {#for rating in article.ratings()}
         <div class="rating">
-            <p><strong>{rating.author}:</strong> {rating.text} ({rating.score}/5)</p>
+            <p><strong>{rating.username()}:</strong> {rating.review()} ({rating.rating()}/5)</p>
         </div>
         {/for}
         {/if}

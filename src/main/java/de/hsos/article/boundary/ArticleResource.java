@@ -1,6 +1,7 @@
 package de.hsos.article.boundary;
 
 import de.hsos.article.boundary.DTO.ArticleDTO;
+import de.hsos.article.boundary.DTO.ArticleDetailsDTO;
 import de.hsos.article.control.ArticleService;
 import de.hsos.article.entity.Article;
 import de.hsos.article.entity.ArticleWithoutImage;
@@ -23,6 +24,8 @@ public class ArticleResource {
     ArticleService articleService;
     @Inject
     Template fileUpload;
+    @Inject
+    Template articleDetails;
 
     @POST
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
@@ -59,6 +62,17 @@ public class ArticleResource {
         }
         ArticleDTO articleDTO = new ArticleDTO(article.heading(), article.price());
         return Response.ok().entity(articleDTO).build();
+    }
+
+    @GET
+    @Path("/{id}/details")
+    @RolesAllowed("user")
+    public Response getArticleDetail(@PathParam("id") long id) {
+        Article article = articleService.getArticle(id);
+        ArticleDetailsDTO articleDetailsDTO = Converter.articleToArticleDetailsDTO(article);
+        TemplateInstance articleDetailsInstance = articleDetails.data("article", articleDetailsDTO);
+        System.out.println("pomafpewmgp");
+        return Response.ok().entity(articleDetailsInstance).build();
     }
 
 

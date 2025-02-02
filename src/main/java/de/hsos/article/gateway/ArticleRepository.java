@@ -54,7 +54,6 @@ public class ArticleRepository implements ArticleService, PanacheRepository<Arti
     }
 
     private Article articleJPAEntityToArticle(ArticleJPAEntity articleJPAEntity) {
-
         return new Article(articleJPAEntity.getHeading(), articleJPAEntity.getPrice(),
                 Base64.getEncoder().encodeToString(articleJPAEntity.getImage()), articleJPAEntity.id,
                 ratingJPAEntityToRating(articleJPAEntity));

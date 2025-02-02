@@ -150,15 +150,41 @@
 
 <div class="articles">
     {#for article in articles}
-    <div class="article">
+    <div class="article" onclick="getArticleDetails({article.id})">
         <img src="data:image/png;base64,{article.image}" alt="{article.heading}">
         <h3>{article.heading}</h3>
-        <p>{article.price} {currency}</p>
+        <p>{article.price} {currency}   ID: {article.id}</p>
     </div>
     {/for}
 </div>
 
 <script>
+    function getArticleDetails(id){
+        const storedData = localStorage.getItem("json");
+        const access_token = JSON.parse(storedData).access_token;
+        fetch("/articles/" + id + "/details", {
+            method: "GET",
+            headers: {
+                Authorization: "Bearer " + access_token,
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    // html aus response parsen
+                    return response.text();
+                }
+            })
+            .then(html => {
+                // aktuelles html dokument ersetzen
+                document.open();
+                document.write(html);
+                document.close();
+
+                window.history.pushState({}, '', "articles/" + id + "/details");
+            });
+    }
+
     function pagingFunction(page, pageSize){
         const storedData = localStorage.getItem("json");
         const access_token = JSON.parse(storedData).access_token;
