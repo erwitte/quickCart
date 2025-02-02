@@ -13,6 +13,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import java.util.List;
+
 @RequestScoped
 @Path("/")
 public class IndexResource {
@@ -29,7 +31,8 @@ public class IndexResource {
     @GET
     @Produces(MediaType.TEXT_HTML)
     public Response index() {
-        TemplateInstance indexInstance = index.data("articles", articleService.getArticles());
+        List<ArticleDTO> articles = articleService.getArticles().stream().map(ArticleConverter::articleToArticleDTO).toList();
+        TemplateInstance indexInstance = index.data("articles", articles);
         return Response.ok(indexInstance).type(MediaType.TEXT_HTML).build();
     }
 
