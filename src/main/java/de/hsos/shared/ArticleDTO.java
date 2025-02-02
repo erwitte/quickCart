@@ -1,4 +1,4 @@
-package de.hsos.user.boundary.DTO;
+package de.hsos.shared;
 
 public record ArticleDTO(
         String heading,

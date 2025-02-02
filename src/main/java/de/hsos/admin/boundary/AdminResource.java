@@ -2,6 +2,8 @@ package de.hsos.admin.boundary;
 
 import de.hsos.article.control.ArticleService;
 import de.hsos.article.entity.Article;
+import de.hsos.shared.ArticleConverter;
+import de.hsos.shared.ArticleDTO;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import io.quarkus.security.Authenticated;
@@ -34,7 +36,7 @@ public class AdminResource {
     @Produces(MediaType.TEXT_HTML)
     public Response getIndexAdmin(){
         String username = jwt.getClaim("preferred_username");
-        List<Article> articles = articleService.getArticles();
+        List<ArticleDTO> articles = articleService.getArticles().stream().map(ArticleConverter::articleToArticleDTO).toList();
         TemplateInstance indexAdminInstance = indexAdmin.data("username", username)
                                                         .data("articles", articles);
         return Response.ok(indexAdminInstance).build();

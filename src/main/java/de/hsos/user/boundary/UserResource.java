@@ -2,6 +2,7 @@ package de.hsos.user.boundary;
 
 import de.hsos.article.control.ArticleService;
 import de.hsos.article.entity.Article;
+import de.hsos.shared.ArticleDTO;
 import de.hsos.user.boundary.DTO.*;
 import de.hsos.shared.KeycloakAPI;
 import de.hsos.shared.KeycloakManager;
