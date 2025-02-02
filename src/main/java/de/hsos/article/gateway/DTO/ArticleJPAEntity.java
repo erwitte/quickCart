@@ -1,9 +1,10 @@
 package de.hsos.article.gateway.DTO;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Lob;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "article")
 @Table(name = "ARTICLE")
@@ -12,13 +13,16 @@ public class ArticleJPAEntity extends PanacheEntity {
     public double price;
     @Lob
     public byte[] image;
+    @OneToMany(mappedBy = "rating", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    public List<RatingJPAEntity> ratings = new ArrayList<>();
 
     public ArticleJPAEntity() {}
 
-    public ArticleJPAEntity(String heading, double price, byte[] image) {
+    public ArticleJPAEntity(String heading, double price, byte[] image, List<RatingJPAEntity> ratings) {
         this.heading = heading;
         this.price = price;
         this.image = image;
+        this.ratings = ratings;
     }
 
     public String getHeading() {
@@ -43,5 +47,13 @@ public class ArticleJPAEntity extends PanacheEntity {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public List<RatingJPAEntity> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<RatingJPAEntity> ratings) {
+        this.ratings = ratings;
     }
 }

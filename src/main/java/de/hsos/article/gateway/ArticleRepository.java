@@ -3,11 +3,13 @@ package de.hsos.article.gateway;
 import de.hsos.article.control.ArticleService;
 import de.hsos.article.entity.Article;
 import de.hsos.article.entity.ArticleWithoutImage;
+import de.hsos.article.entity.Rating;
 import de.hsos.article.gateway.DTO.ArticleJPAEntity;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.transaction.Transactional;
 
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
@@ -52,8 +54,16 @@ public class ArticleRepository implements ArticleService, PanacheRepository<Arti
     }
 
     private Article articleJPAEntityToArticle(ArticleJPAEntity articleJPAEntity) {
+
         return new Article(articleJPAEntity.getHeading(), articleJPAEntity.getPrice(),
-                Base64.getEncoder().encodeToString(articleJPAEntity.getImage()), articleJPAEntity.id);
+                Base64.getEncoder().encodeToString(articleJPAEntity.getImage()), articleJPAEntity.id,
+                ratingJPAEntityToRating(articleJPAEntity));
+    }
+
+    private List<Rating> ratingJPAEntityToRating(ArticleJPAEntity articleJPAEntity) {
+        return articleJPAEntity.getRatings().stream()
+                .map(ratingJPAEntity -> new Rating(ratingJPAEntity.getUsername(), ratingJPAEntity.getReview(), ratingJPAEntity.getRating())
+                ).toList();
     }
 
     @Override
@@ -63,7 +73,8 @@ public class ArticleRepository implements ArticleService, PanacheRepository<Arti
         if (articleEntity == null) {
             return null;
         }
-        return new Article(articleEntity.getHeading(), articleEntity.getPrice(), Base64.getEncoder().encodeToString(articleEntity.getImage()), id);
+        return new Article(articleEntity.getHeading(), articleEntity.getPrice(),
+                Base64.getEncoder().encodeToString(articleEntity.getImage()), id, ratingJPAEntityToRating(articleEntity));
     }
 
     @Override
