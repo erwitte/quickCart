@@ -5,6 +5,7 @@ import de.hsos.article.entity.Article;
 import de.hsos.article.entity.ArticleWithoutImage;
 import de.hsos.article.entity.Rating;
 import de.hsos.article.gateway.DTO.ArticleJPAEntity;
+import de.hsos.article.gateway.DTO.RatingJPAEntity;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.transaction.Transactional;
@@ -15,6 +16,16 @@ import java.util.List;
 
 @RequestScoped
 public class ArticleRepository implements ArticleService, PanacheRepository<ArticleJPAEntity> {
+
+    @Override
+    @Transactional
+    public void addRating(long id, Rating rating){
+        RatingJPAEntity ratingEntity = Converter.ratingToRatingJPAEntity(rating);
+        ratingEntity.persist();
+        ArticleJPAEntity article = ArticleJPAEntity.findById(id);
+        article.getRatings().add(ratingEntity);
+        article.persist();
+    }
 
     @Override
     @Transactional

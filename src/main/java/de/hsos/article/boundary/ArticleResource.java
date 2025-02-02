@@ -2,9 +2,12 @@ package de.hsos.article.boundary;
 
 import de.hsos.article.boundary.DTO.ArticleDTO;
 import de.hsos.article.boundary.DTO.ArticleDetailsDTO;
+import de.hsos.article.boundary.DTO.RatingDTO;
+import de.hsos.article.boundary.DTO.ReceiveRatingDTO;
 import de.hsos.article.control.ArticleService;
 import de.hsos.article.entity.Article;
 import de.hsos.article.entity.ArticleWithoutImage;
+import de.hsos.article.entity.Rating;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import io.quarkus.security.Authenticated;
@@ -15,6 +18,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
 @RequestScoped
 @Path("/articles")
@@ -26,6 +30,8 @@ public class ArticleResource {
     Template fileUpload;
     @Inject
     Template articleDetails;
+    @Inject
+    JsonWebToken jwt;
 
     @POST
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
@@ -71,8 +77,16 @@ public class ArticleResource {
         Article article = articleService.getArticle(id);
         ArticleDetailsDTO articleDetailsDTO = Converter.articleToArticleDetailsDTO(article);
         TemplateInstance articleDetailsInstance = articleDetails.data("article", articleDetailsDTO);
-        System.out.println("pomafpewmgp");
         return Response.ok().entity(articleDetailsInstance).build();
+    }
+
+    @PATCH
+    @Path("/{id}/details")
+    @RolesAllowed("user")
+    public void addRating(@PathParam("id") long id, ReceiveRatingDTO receiveRatingDTO) {
+        String username = jwt.getClaim("preferred_username");
+        Rating rating = new Rating(username, receiveRatingDTO.review(), receiveRatingDTO.rating());
+        articleService.addRating(id, rating);
     }
 
 
