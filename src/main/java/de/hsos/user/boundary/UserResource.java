@@ -3,6 +3,7 @@ package de.hsos.user.boundary;
 import de.hsos.article.control.ArticleService;
 import de.hsos.article.entity.Article;
 import de.hsos.shared.ArticleDTO;
+import de.hsos.shared.PagingService;
 import de.hsos.user.boundary.DTO.*;
 import de.hsos.shared.KeycloakAPI;
 import de.hsos.shared.KeycloakManager;
@@ -73,23 +74,6 @@ public class UserResource {
                 )).toList();
     }
 
-    private List<ArticleDTO> getPagedArticleList(int page, int pageSize, List<ArticleDTO> articles) {
-        // validation
-        if (pageSize <= 0) {
-            throw new IllegalArgumentException("Page size must be greater than zero.");
-        }
-        if (page < 1) {
-            throw new IllegalArgumentException("Page number must be at least 1.");
-        }
-        int fromIndex = (page - 1) * pageSize;
-        int toIndex = Math.min(fromIndex + pageSize, articles.size());
-        if (fromIndex >= articles.size()) {
-            return Collections.emptyList(); // Return empty list if page exceeds available items
-        }
-
-        return articles.subList(fromIndex, toIndex);
-    }
-
     @GET
     @Produces(MediaType.TEXT_HTML)
     public Response indexUser(
@@ -101,7 +85,7 @@ public class UserResource {
         List<ArticleDTO> articleList = adjustArticleListToExchaneRate(user.getCurrency(), articleService.getArticles());
         List<ArticleDTO> pagedArticleList = Collections.emptyList();
         try {
-            pagedArticleList = getPagedArticleList(page, pageSize, articleList);
+            pagedArticleList = PagingService.getPagedArticleList(page, pageSize, articleList);
         } catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
         }

@@ -5,10 +5,7 @@ import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
@@ -30,9 +27,13 @@ public class IndexResource {
 
     @GET
     @Produces(MediaType.TEXT_HTML)
-    public Response index() {
+    public Response index(
+            @QueryParam("page") @DefaultValue("1") int page,
+            @QueryParam("pageSize") @DefaultValue("9") int pageSize
+    ) {
         List<ArticleDTO> articles = articleService.getArticles().stream().map(ArticleConverter::articleToArticleDTO).toList();
-        TemplateInstance indexInstance = index.data("articles", articles);
+        List<ArticleDTO> pagedArticles = PagingService.getPagedArticleList(page, pageSize, articles);
+        TemplateInstance indexInstance = index.data("articles", pagedArticles);
         return Response.ok(indexInstance).type(MediaType.TEXT_HTML).build();
     }
 

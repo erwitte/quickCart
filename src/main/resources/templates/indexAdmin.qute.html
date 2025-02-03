@@ -183,7 +183,7 @@
     function pagingFunction(page, pageSize){
         const storedData = localStorage.getItem("json");
         const access_token = JSON.parse(storedData).access_token;
-        const url = "/users?page=" + page + "&pageSize=" + pageSize;
+        const url = "/admin?page=" + page + "&pageSize=" + pageSize;
         fetch(url, {
             method: "GET",
             headers: {
