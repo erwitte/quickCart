@@ -13,7 +13,7 @@ public class ArticleJPAEntity extends PanacheEntity {
     public double price;
     @Lob
     public byte[] image;
-    @OneToMany(mappedBy = "rating", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     public List<RatingJPAEntity> ratings = new ArrayList<>();
 
     public ArticleJPAEntity() {}

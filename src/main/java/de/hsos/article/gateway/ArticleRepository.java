@@ -20,10 +20,12 @@ public class ArticleRepository implements ArticleService, PanacheRepository<Arti
     @Override
     @Transactional
     public void addRating(long id, Rating rating){
-        RatingJPAEntity ratingEntity = Converter.ratingToRatingJPAEntity(rating);
+        RatingJPAEntity ratingEntity = new RatingJPAEntity(rating.username(), rating.review(), rating.rating());
         ratingEntity.persist();
         ArticleJPAEntity article = ArticleJPAEntity.findById(id);
-        article.getRatings().add(ratingEntity);
+        List<RatingJPAEntity> ratings = article.getRatings();
+        ratings.add(ratingEntity);
+        article.setRatings(ratings);
         article.persist();
     }
 
