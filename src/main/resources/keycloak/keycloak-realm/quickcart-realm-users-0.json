@@ -1,0 +1,102 @@
+{
+  "realm" : "quickcart-realm",
+  "users" : [ {
+    "id" : "792c1686-e439-4319-9883-58c3bdde5175",
+    "username" : "admin",
+    "firstName" : "admin",
+    "lastName" : "admin",
+    "email" : "keine@existent2.de",
+    "emailVerified" : true,
+    "createdTimestamp" : 1737819484348,
+    "enabled" : true,
+    "totp" : false,
+    "credentials" : [ {
+      "id" : "4ea034a2-57f2-4261-a49f-80d6480c4bb4",
+      "type" : "password",
+      "userLabel" : "My password",
+      "createdDate" : 1737819514702,
+      "secretData" : "{\"value\":\"I605Ev5hl1KyCXaGxVugqcR7SHS7h7rhLzv6hNQoMyk=\",\"salt\":\"LWOpmYnvrznfGbcuVEbIJQ==\",\"additionalParameters\":{}}",
+      "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "admin", "default-roles-quickcart-realm" ],
+    "notBefore" : 1737986306,
+    "groups" : [ ]
+  }, {
+    "id" : "4dac1c87-2179-438a-a58d-72a8080ba7e5",
+    "username" : "keycloak_manager",
+    "firstName" : "keycloak",
+    "lastName" : "manager",
+    "email" : "keine@existent.de",
+    "emailVerified" : true,
+    "createdTimestamp" : 1737731515161,
+    "enabled" : true,
+    "totp" : false,
+    "credentials" : [ {
+      "id" : "3483fd91-bfe5-4042-b4cd-90612941bfcd",
+      "type" : "password",
+      "userLabel" : "My password",
+      "createdDate" : 1737731595657,
+      "secretData" : "{\"value\":\"u/uHpltH5Vq7wh7bWfInthkl7PZxz0ivSWSZOgxesmk=\",\"salt\":\"qCiSAdDseHEtMOR2WXFSaQ==\",\"additionalParameters\":{}}",
+      "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-quickcart-realm" ],
+    "clientRoles" : {
+      "realm-management" : [ "manage-users", "manage-clients", "query-clients", "manage-events", "query-users", "query-realms", "view-identity-providers", "query-groups", "view-users", "realm-admin", "create-client", "view-clients", "view-realm", "manage-realm", "manage-authorization", "impersonation", "view-events", "manage-identity-providers", "view-authorization" ],
+      "quarkus-be" : [ "uma_protection" ],
+      "broker" : [ "read-token" ],
+      "account" : [ "manage-account", "view-profile", "view-applications", "delete-account", "manage-consent", "view-groups", "manage-account-links", "view-consent" ]
+    },
+    "notBefore" : 1737811441,
+    "groups" : [ ]
+  }, {
+    "id" : "5776c1e8-3696-4ea0-86a1-55a6a269f526",
+    "username" : "sagar",
+    "firstName" : "sagar",
+    "lastName" : "kumar",
+    "email" : "sagar@demo.com",
+    "emailVerified" : true,
+    "attributes" : {
+      "street" : [ "est" ]
+    },
+    "createdTimestamp" : 1737628579852,
+    "enabled" : true,
+    "totp" : false,
+    "credentials" : [ {
+      "id" : "197294e1-86da-41bd-ac37-233ecdfbc907",
+      "type" : "password",
+      "userLabel" : "My password",
+      "createdDate" : 1737628617033,
+      "secretData" : "{\"value\":\"xfQj/SmQPuFKA3ID9JVnBqRJfZLEbdIDm9pmJcp3vAQ=\",\"salt\":\"r0DlSRwTk0ABEqHpbxTzsw==\",\"additionalParameters\":{}}",
+      "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "user", "default-roles-quickcart-realm" ],
+    "clientRoles" : {
+      "realm-management" : [ "manage-users" ]
+    },
+    "notBefore" : 1737823715,
+    "groups" : [ ]
+  }, {
+    "id" : "2ffcc684-7828-411d-a7e3-e5cce337bcba",
+    "username" : "service-account-quarkus-be",
+    "emailVerified" : false,
+    "createdTimestamp" : 1737644224281,
+    "enabled" : true,
+    "totp" : false,
+    "serviceAccountClientId" : "quarkus-be",
+    "credentials" : [ ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-quickcart-realm" ],
+    "clientRoles" : {
+      "quarkus-be" : [ "uma_protection" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  } ]
+}
