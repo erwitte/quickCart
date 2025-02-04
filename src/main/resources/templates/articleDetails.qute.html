@@ -115,7 +115,7 @@
 
     <img class="article-image" src="data:image/png;base64,{article.image}" alt="{article.heading()}">
 
-    <p class="article-price">{article.price()} currency</p>
+    <p class="article-price" id="article-price"><script>adjustPriceToUserCurrency({article.price()})</script></p>
 
     <p><strong>ID:</strong> {article.id}</p>
 
@@ -147,6 +147,25 @@
 </div>
 
 <script>
+    async function adjustPriceToUserCurrency(price) {
+        const json = localStorage.getItem("json");
+        const access_token = JSON.parse(json).access_token;
+        const articlePriceElement = document.getElementById("article-price");
+        let adjustedPrice;
+        await fetch("/users/price?price=" + encodeURIComponent(price), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + access_token
+            }
+        })
+            .then(response => response.text())
+            .then(data => {
+                adjustedPrice = data;
+            })
+        articlePriceElement.textContent = adjustedPrice;
+    }
+
     function submitRating(articleId) {
         const score = document.getElementById("rating-score").value;
         const text = document.getElementById("rating-text").value;
