@@ -80,8 +80,9 @@ public class UserResource {
         String username = jwt.getClaim("preferred_username");
         User user = userService.getUser(username);
         double exchangeRate = ExchangeRateService.getExchangeRate(user.getCurrency());
-        double adjustedPrice = price * exchangeRate;
-        String adjustedPriceWithCurrency = adjustedPrice + user.getCurrency();
+        double adjustedPriceCurrency = price * exchangeRate;
+        BigDecimal adjustedPriceRounded = BigDecimal.valueOf(adjustedPriceCurrency).setScale(2, RoundingMode.HALF_UP);
+        String adjustedPriceWithCurrency = adjustedPriceRounded + user.getCurrency();
         return Response.ok(adjustedPriceWithCurrency).build();
     }
 
