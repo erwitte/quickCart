@@ -27,7 +27,7 @@ public class CartResource {
     @Inject
     JsonWebToken jwt;
     @Inject
-    Template checkOutUser;
+    Template checkoutUser;
 
     @POST
     public void createCart() {
@@ -50,7 +50,7 @@ public class CartResource {
 
     @GET
     @Produces(MediaType.TEXT_HTML)
-    public Response getCheckOutpage(){
+    public Response getCheckoutpage(){
         List<ArticleCartDTO> articlesInCart = getCart().articleIdAndQuantity().entrySet().stream()
                 .map(entry -> {
                     long articleId = entry.getKey();
@@ -58,7 +58,7 @@ public class CartResource {
                     return new ArticleCartDTO(articleId, quantity);
                 })
                 .toList();
-        TemplateInstance checkOutInstance = checkOutUser.data("articles", articlesInCart);
+        TemplateInstance checkOutInstance = checkoutUser.data("articles", articlesInCart);
        return Response.ok(checkOutInstance).build();
     }
 

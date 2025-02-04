@@ -22,9 +22,9 @@
                 .then(async response => {
                     return await response.json();
                 })
-                .then(article => {
+                .then(async article => {
                     heading = article.heading;
-                    price = article.price;
+                    price = await adjustPriceToUserCurrency(article.price, access_token);
                     console.log("heading: " + heading + " price: " + price);
                 })
 
@@ -33,6 +33,22 @@
             cartItem.classList.add("cart-item");
             cartItem.innerHTML = '<div class="details"> <strong>' + heading + '</strong> - ' + price + ' </div> <div class="quantity">' + quantity + '</div>';
             cartItemsContainer.appendChild(cartItem);
+        }
+
+        async function adjustPriceToUserCurrency(price, access_token) {
+            let adjustedPrice;
+            await fetch("/users/price?price=" + encodeURIComponent(price), {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + access_token
+                }
+            })
+                .then(response => response.text())
+                .then(data => {
+                    adjustedPrice = data;
+                })
+            return adjustedPrice;
         }
 
         function cancel(){

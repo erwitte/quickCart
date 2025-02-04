@@ -116,6 +116,11 @@
             <a href="/register">register</a>
         </div>
     </div>
+    <div class="navigation">
+        <input type="number" id="pageSize" class="page-size" value="10" min="1" onchange="changePageSize()">
+        <a class="nav-arrow" onclick="getPreviousPage()">←</a>
+        <a class="nav-arrow" onclick="getNextPage()">→</a>
+    </div>
 </div>
 
 <div class="articles">
@@ -130,13 +135,10 @@
 </body>
 <script>
     function pagingFunction(page, pageSize){
-        const storedData = localStorage.getItem("json");
-        const access_token = JSON.parse(storedData).access_token;
-        const url = "/users?page=" + page + "&pageSize=" + pageSize;
+        const url = "/?page=" + page + "&pageSize=" + pageSize;
         fetch(url, {
             method: "GET",
             headers: {
-                Authorization: "Bearer " + access_token,
                 "Content-Type": "application/json"
             }
         })

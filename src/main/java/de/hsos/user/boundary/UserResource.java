@@ -75,6 +75,17 @@ public class UserResource {
     }
 
     @GET
+    @Path("/price")
+    public Response getCorrectPrice(@QueryParam("price") double price){
+        String username = jwt.getClaim("preferred_username");
+        User user = userService.getUser(username);
+        double exchangeRate = ExchangeRateService.getExchangeRate(user.getCurrency());
+        double adjustedPrice = price * exchangeRate;
+        String adjustedPriceWithCurrency = adjustedPrice + user.getCurrency();
+        return Response.ok(adjustedPriceWithCurrency).build();
+    }
+
+    @GET
     @Produces(MediaType.TEXT_HTML)
     public Response indexUser(
             @QueryParam("page") @DefaultValue("1") int page,
