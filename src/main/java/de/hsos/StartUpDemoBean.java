@@ -18,52 +18,52 @@ public class StartUpDemoBean {
 
     public void onStart(@Observes StartupEvent startupEvent) throws IOException {
         long id = articleService.createArticle(new ArticleWithoutImage("chair", 2));
-        File image = new File("chair.jpg");
+        File image = new File("demoData/chair.jpg");
         byte[] imageBytes = Files.readAllBytes(image.toPath());
         articleService.safeImage(id, imageBytes);
 
         id = articleService.createArticle(new ArticleWithoutImage("shirt", 3.5));
-        image = new File("shirt.jpg");
+        image = new File("demoData/shirt.jpg");
         imageBytes = Files.readAllBytes(image.toPath());
         articleService.safeImage(id, imageBytes);
 
         id = articleService.createArticle(new ArticleWithoutImage("headset", 20));
-        image = new File("headset.jpg");
+        image = new File("demoData/headset.jpg");
         imageBytes = Files.readAllBytes(image.toPath());
         articleService.safeImage(id, imageBytes);
 
         id = articleService.createArticle(new ArticleWithoutImage("couch", 200));
-        image = new File("couch.jpg");
+        image = new File("demoData/couch.jpg");
         imageBytes = Files.readAllBytes(image.toPath());
         articleService.safeImage(id, imageBytes);
 
         id = articleService.createArticle(new ArticleWithoutImage("pan", 4));
-        image = new File("pan.jpg");
+        image = new File("demoData/pan.jpg");
         imageBytes = Files.readAllBytes(image.toPath());
         articleService.safeImage(id, imageBytes);
 
         id = articleService.createArticle(new ArticleWithoutImage("coffee maker", 50));
-        image = new File("coffee_maker.jpg");
+        image = new File("demoData/coffee_maker.jpg");
         imageBytes = Files.readAllBytes(image.toPath());
         articleService.safeImage(id, imageBytes);
 
         id = articleService.createArticle(new ArticleWithoutImage("coffee beans", 20));
-        image = new File("coffee.jpg");
+        image = new File("demoData/coffee.jpg");
         imageBytes = Files.readAllBytes(image.toPath());
         articleService.safeImage(id, imageBytes);
 
         id = articleService.createArticle(new ArticleWithoutImage("television", 22));
-        image = new File("tv.png");
+        image = new File("demoData/tv.png");
         imageBytes = Files.readAllBytes(image.toPath());
         articleService.safeImage(id, imageBytes);
 
         id = articleService.createArticle(new ArticleWithoutImage("playstation", 75));
-        image = new File("playstation.jpg");
+        image = new File("demoData/playstation.jpg");
         imageBytes = Files.readAllBytes(image.toPath());
         articleService.safeImage(id, imageBytes);
 
         id = articleService.createArticle(new ArticleWithoutImage("fork", 1));
-        image = new File("fork.jpg");
+        image = new File("demoData/fork.jpg");
         imageBytes = Files.readAllBytes(image.toPath());
         articleService.safeImage(id, imageBytes);
     }

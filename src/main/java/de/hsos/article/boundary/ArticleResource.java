@@ -2,7 +2,6 @@ package de.hsos.article.boundary;
 
 import de.hsos.article.boundary.DTO.ArticleDTO;
 import de.hsos.article.boundary.DTO.ArticleDetailsDTO;
-import de.hsos.article.boundary.DTO.RatingDTO;
 import de.hsos.article.boundary.DTO.ReceiveRatingDTO;
 import de.hsos.article.control.ArticleService;
 import de.hsos.article.entity.Article;
