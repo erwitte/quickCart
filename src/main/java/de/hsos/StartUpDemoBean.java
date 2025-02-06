@@ -17,6 +17,9 @@ public class StartUpDemoBean {
     ArticleService articleService;
 
     public void onStart(@Observes StartupEvent startupEvent) throws IOException {
+        if (!articleService.getArticles().isEmpty()) {
+            return;
+        }
         long id = articleService.createArticle(new ArticleWithoutImage("chair", 2));
         File image = new File("demoData/chair.jpg");
         byte[] imageBytes = Files.readAllBytes(image.toPath());

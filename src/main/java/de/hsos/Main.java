@@ -11,12 +11,13 @@ import java.io.InputStreamReader;
 public class Main {
 
     public static void main(String ... args) {
+        // ki generiert
         try{
             ProcessBuilder processBuilder = new ProcessBuilder("docker-compose", "-f", "src/main/resources/keycloak/keycloak.yaml", "up");
             processBuilder.redirectErrorStream(true);
             Process process = processBuilder.start();
             Quarkus.run(args);
-            
+
             // Read and print the output
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
@@ -27,5 +28,6 @@ public class Main {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+        // ende ki generiert
     }
 }

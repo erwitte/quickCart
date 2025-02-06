@@ -18,10 +18,18 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 @RequestScoped
 @Path("/articles")
 @Authenticated
+@Tag(name = "Articles", description = "Operations related to articles in the webshop.")
 public class ArticleResource {
     @Inject
     ArticleService articleService;
@@ -36,7 +44,11 @@ public class ArticleResource {
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Path("/{id}")
     @RolesAllowed("admin")
-    public Response savePicture(@PathParam("id") long id, byte[] image) {
+    @Operation(summary = "Upload an article image", description = "Uploads an image for a specific article ID.")
+    @APIResponse(responseCode = "201", description = "Image successfully uploaded")
+    @APIResponse(responseCode = "403", description = "Unauthorized access")
+    public Response savePicture(@Parameter(description = "Article ID", required = true)
+            @PathParam("id") long id, byte[] image) {
         articleService.safeImage(id, image);
         return Response.status(Response.Status.CREATED).build();
     }
@@ -44,7 +56,11 @@ public class ArticleResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed("admin")
-    public Response saveArticle(ArticleDTO articleDTO) {
+    @Operation(summary = "Create a new article", description = "Creates a new article and returns its ID.")
+    @APIResponse(responseCode = "201", description = "Article successfully created")
+    @APIResponse(responseCode = "403", description = "Unauthorized access")
+    public Response saveArticle(@RequestBody(description = "Article details", required = true, content = @Content(schema = @Schema(implementation = ArticleDTO.class)))
+                                    ArticleDTO articleDTO) {
         ArticleWithoutImage articleWithoutImage = new ArticleWithoutImage(articleDTO.getHeading(), articleDTO.getPrice());
         long id = articleService.createArticle(articleWithoutImage);
         return Response.status(Response.Status.CREATED).entity(id).build();
@@ -52,6 +68,8 @@ public class ArticleResource {
 
     @GET
     @PermitAll
+    @Operation(summary = "Get all articles", description = "Returns a list of all available articles.")
+    @APIResponse(responseCode = "200", description = "List of articles returned")
     public Response getAllArticles() {
         TemplateInstance fileUploadInstance = fileUpload.instance();
         return Response.ok().entity(fileUploadInstance).build();
@@ -60,7 +78,10 @@ public class ArticleResource {
     @GET
     @Path("/{id}")
     @RolesAllowed("user")
-    public Response getArticle(@PathParam("id") long id) {
+    @Operation(summary = "Get article by ID", description = "Retrieves a specific article by its ID.")
+    @APIResponse(responseCode = "200", description = "Article found", content = @Content(schema = @Schema(implementation = ArticleDTO.class)))
+    @APIResponse(responseCode = "404", description = "Article not found")
+    public Response getArticle(@Parameter(description = "Article ID", required = true) @PathParam("id") long id) {
         Article article = articleService.getArticle(id);
         if (article == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -72,7 +93,10 @@ public class ArticleResource {
     @GET
     @Path("/{id}/details")
     @RolesAllowed("user")
-    public Response getArticleDetail(@PathParam("id") long id) {
+    @Operation(summary = "Get article details", description = "Retrieves detailed information about an article.")
+    @APIResponse(responseCode = "200", description = "Article details retrieved")
+    @APIResponse(responseCode = "404", description = "Article not found")
+    public Response getArticleDetail(@Parameter(description = "Article ID", required = true) @PathParam("id") long id) {
         Article article = articleService.getArticle(id);
         ArticleDetailsDTO articleDetailsDTO = Converter.articleToArticleDetailsDTO(article);
         TemplateInstance articleDetailsInstance = articleDetails.data("article", articleDetailsDTO);
@@ -82,7 +106,12 @@ public class ArticleResource {
     @PATCH
     @Path("/{id}/details")
     @RolesAllowed("user")
-    public void addRating(@PathParam("id") long id, ReceiveRatingDTO receiveRatingDTO) {
+    @Operation(summary = "Add a rating", description = "Allows a user to submit a rating for an article.")
+    @APIResponse(responseCode = "204", description = "Rating added successfully")
+    @APIResponse(responseCode = "403", description = "Unauthorized access")
+    public void addRating(@Parameter(description = "Article ID", required = true) @PathParam("id") long id,
+                          @RequestBody(description = "Rating details", required = true, content = @Content(schema = @Schema(implementation = ReceiveRatingDTO.class)))
+                          ReceiveRatingDTO receiveRatingDTO) {
         String username = jwt.getClaim("preferred_username");
         Rating rating = new Rating(username, receiveRatingDTO.review(), receiveRatingDTO.rating());
         articleService.addRating(id, rating);
@@ -92,7 +121,11 @@ public class ArticleResource {
     @DELETE
     @RolesAllowed("admin")
     @Path("/{id}")
-    public void deleteArticle(@PathParam("id") long id) {
+    @Operation(summary = "Delete an article", description = "Deletes an article by ID.")
+    @APIResponse(responseCode = "204", description = "Article deleted successfully")
+    @APIResponse(responseCode = "403", description = "Unauthorized access")
+    @APIResponse(responseCode = "404", description = "Article not found")
+    public void deleteArticle(@Parameter(description = "Article ID", required = true) @PathParam("id") long id) {
         articleService.deleteArticle(id);
     }
 }

@@ -15,12 +15,17 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.List;
 
 @ApplicationScoped
 @Path("/admin")
 @RolesAllowed("admin")
+@Tag(name = "Admin", description = "Admin operations for managing articles and file uploads.")
 public class AdminResource {
     @Inject
     ArticleService articleService;
@@ -33,6 +38,16 @@ public class AdminResource {
 
     @GET
     @Produces(MediaType.TEXT_HTML)
+    @Operation(
+            summary = "Get admin index page",
+            description = "Returns the admin dashboard page with paginated articles."
+    )
+    @APIResponse(
+            responseCode = "200",
+            description = "Admin dashboard returned",
+            content = @Content(mediaType = MediaType.TEXT_HTML)
+    )
+    @APIResponse(responseCode = "401", description = "Forbidden, only admins can access this")
     public Response getIndexAdmin(
             @QueryParam("page") @DefaultValue("1") int page,
             @QueryParam("pageSize") @DefaultValue("9") int pageSize
@@ -48,6 +63,16 @@ public class AdminResource {
     @GET
     @Produces(MediaType.TEXT_HTML)
     @Path("/file-upload")
+    @Operation(
+            summary = "Get file upload page",
+            description = "Returns the file upload page for administrators."
+    )
+    @APIResponse(
+            responseCode = "200",
+            description = "File upload page returned",
+            content = @Content(mediaType = MediaType.TEXT_HTML)
+    )
+    @APIResponse(responseCode = "401", description = "Forbidden, only admins can access this")
     public Response getFileUploadPage(){
         return Response.ok(fileUpload.render()).build();
     }
