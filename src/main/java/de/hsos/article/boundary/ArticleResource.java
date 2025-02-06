@@ -46,7 +46,7 @@ public class ArticleResource {
     @RolesAllowed("admin")
     @Operation(summary = "Upload an article image", description = "Uploads an image for a specific article ID.")
     @APIResponse(responseCode = "201", description = "Image successfully uploaded")
-    @APIResponse(responseCode = "403", description = "Unauthorized access")
+    @APIResponse(responseCode = "401", description = "Unauthorized access")
     public Response savePicture(@Parameter(description = "Article ID", required = true)
             @PathParam("id") long id, byte[] image) {
         articleService.safeImage(id, image);
@@ -58,7 +58,7 @@ public class ArticleResource {
     @RolesAllowed("admin")
     @Operation(summary = "Create a new article", description = "Creates a new article and returns its ID.")
     @APIResponse(responseCode = "201", description = "Article successfully created")
-    @APIResponse(responseCode = "403", description = "Unauthorized access")
+    @APIResponse(responseCode = "401", description = "Unauthorized access")
     public Response saveArticle(@RequestBody(description = "Article details", required = true, content = @Content(schema = @Schema(implementation = ArticleDTO.class)))
                                     ArticleDTO articleDTO) {
         ArticleWithoutImage articleWithoutImage = new ArticleWithoutImage(articleDTO.getHeading(), articleDTO.getPrice());
@@ -81,6 +81,7 @@ public class ArticleResource {
     @Operation(summary = "Get article by ID", description = "Retrieves a specific article by its ID.")
     @APIResponse(responseCode = "200", description = "Article found", content = @Content(schema = @Schema(implementation = ArticleDTO.class)))
     @APIResponse(responseCode = "404", description = "Article not found")
+    @APIResponse(responseCode = "401", description = "Unauthorized access")
     public Response getArticle(@Parameter(description = "Article ID", required = true) @PathParam("id") long id) {
         Article article = articleService.getArticle(id);
         if (article == null) {
@@ -96,6 +97,7 @@ public class ArticleResource {
     @Operation(summary = "Get article details", description = "Retrieves detailed information about an article.")
     @APIResponse(responseCode = "200", description = "Article details retrieved")
     @APIResponse(responseCode = "404", description = "Article not found")
+    @APIResponse(responseCode = "401", description = "Unauthorized access")
     public Response getArticleDetail(@Parameter(description = "Article ID", required = true) @PathParam("id") long id) {
         Article article = articleService.getArticle(id);
         ArticleDetailsDTO articleDetailsDTO = Converter.articleToArticleDetailsDTO(article);
@@ -108,7 +110,7 @@ public class ArticleResource {
     @RolesAllowed("user")
     @Operation(summary = "Add a rating", description = "Allows a user to submit a rating for an article.")
     @APIResponse(responseCode = "204", description = "Rating added successfully")
-    @APIResponse(responseCode = "403", description = "Unauthorized access")
+    @APIResponse(responseCode = "401", description = "Unauthorized access")
     public void addRating(@Parameter(description = "Article ID", required = true) @PathParam("id") long id,
                           @RequestBody(description = "Rating details", required = true, content = @Content(schema = @Schema(implementation = ReceiveRatingDTO.class)))
                           ReceiveRatingDTO receiveRatingDTO) {
@@ -123,7 +125,7 @@ public class ArticleResource {
     @Path("/{id}")
     @Operation(summary = "Delete an article", description = "Deletes an article by ID.")
     @APIResponse(responseCode = "204", description = "Article deleted successfully")
-    @APIResponse(responseCode = "403", description = "Unauthorized access")
+    @APIResponse(responseCode = "401", description = "Unauthorized access")
     @APIResponse(responseCode = "404", description = "Article not found")
     public void deleteArticle(@Parameter(description = "Article ID", required = true) @PathParam("id") long id) {
         articleService.deleteArticle(id);

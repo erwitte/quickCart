@@ -19,6 +19,13 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.math.BigDecimal;
@@ -29,6 +36,7 @@ import java.util.List;
 @Path("/users")
 @RequestScoped
 @RolesAllowed("user")
+@Tag(name = "Users", description = "Operations related to user management and interactions.")
 public class UserResource {
     @Inject
     Template indexUser;
@@ -52,7 +60,11 @@ public class UserResource {
     @GET
     @Produces(MediaType.TEXT_HTML)
     @Path("/search")
-    public Response searchArticles(@QueryParam("article") String article) {
+    @Operation(summary = "Search for articles", description = "Returns a list of articles that match the search query.")
+    @APIResponse(responseCode = "200", description = "Articles returned successfully")
+    @APIResponse(responseCode = "401", description = "Unauthorized, only users can access this")
+    public Response searchArticles(@Parameter(description = "Article name to search for", required = true)
+            @QueryParam("article") String article) {
         String username = jwt.getClaim("preferred_username");
         User user = userService.getUser(username);
         List<ArticleDTO> articleList = adjustArticleListToExchaneRate(user.getCurrency(), articleService.getArticlesByHeading(article));
@@ -76,7 +88,11 @@ public class UserResource {
 
     @GET
     @Path("/price")
-    public Response getCorrectPrice(@QueryParam("price") double price){
+    @Operation(summary = "Get adjusted price", description = "Returns the price converted to the user's currency.")
+    @APIResponse(responseCode = "200", description = "Converted price returned")
+    @APIResponse(responseCode = "401", description = "Unauthorized, only users can access this")
+    public Response getCorrectPrice(@Parameter(description = "Original price", required = true)
+            @QueryParam("price") double price){
         String username = jwt.getClaim("preferred_username");
         User user = userService.getUser(username);
         double exchangeRate = ExchangeRateService.getExchangeRate(user.getCurrency());
@@ -88,9 +104,11 @@ public class UserResource {
 
     @GET
     @Produces(MediaType.TEXT_HTML)
+    @Operation(summary = "Get user index page", description = "Returns the user dashboard with paginated articles.")
+    @APIResponse(responseCode = "200", description = "User dashboard returned")
     public Response indexUser(
-            @QueryParam("page") @DefaultValue("1") int page,
-            @QueryParam("pageSize") @DefaultValue("9") int pageSize
+            @Parameter(description = "Page number for pagination", example = "1") @QueryParam("page") @DefaultValue("1") int page,
+            @Parameter(description = "Number of articles per page", example = "9") @QueryParam("pageSize") @DefaultValue("9") int pageSize
     ){
         String username = jwt.getClaim("preferred_username");
         User user = userService.getUser(username);
@@ -114,14 +132,23 @@ public class UserResource {
 
     @POST
     @Path("/logout")
-    public Response logOutUser(RefreshTokenDTO refreshTokenDTO){
+    @Operation(summary = "Logout user", description = "Logs out the user from Keycloak.")
+    @APIResponse(responseCode = "200", description = "User logged out successfully")
+    public Response logOutUser(@RequestBody(description = "Refresh token for logout", required = true,
+            content = @Content(schema = @Schema(implementation = RefreshTokenDTO.class)))
+            RefreshTokenDTO refreshTokenDTO){
         keycloakAPI.logout(refreshTokenDTO.refreshToken());
         return Response.ok().build();
     }
 
     @POST
     @PermitAll
-    public Response createUser(CreateUserDTO newUser) {
+    @Operation(summary = "Create a new user", description = "Registers a new user in Keycloak and the application database.")
+    @APIResponse(responseCode = "201", description = "User created successfully")
+    @APIResponse(responseCode = "400", description = "Bad request, missing data")
+    public Response createUser(@RequestBody(description = "New user details", required = true,
+            content = @Content(schema = @Schema(implementation = CreateUserDTO.class)))
+            CreateUserDTO newUser) {
         String keycloakManagerAccessToken = "Bearer " + keycloakManager.getAccessToken();
         Response wasCreated = keycloakAPI.createUser(new CreateUserKeycloakDTO(newUser.getUsername(),
                                                     newUser.getPassword(),newUser.getEmail()), keycloakManagerAccessToken);
@@ -134,6 +161,8 @@ public class UserResource {
 
     @GET
     @Path("/settings")
+    @Operation(summary = "Get user settings", description = "Returns the user settings page.")
+    @APIResponse(responseCode = "200", description = "Settings page returned")
     public Response settings(){
         TemplateInstance settingsInstance = settingsUser.instance();
         return Response.ok(settingsInstance.render()).type(MediaType.TEXT_HTML).build();
@@ -141,7 +170,11 @@ public class UserResource {
 
     @PATCH
     @Path("/settings")
-    public void updateUserData(UpdateUserDTO updateUserDTO){
+    @Operation(summary = "Update user data", description = "Updates the user's address and currency settings.")
+    @APIResponse(responseCode = "204", description = "User data updated successfully")
+    public void updateUserData(@RequestBody(description = "Updated user details", required = true,
+            content = @Content(schema = @Schema(implementation = UpdateUserDTO.class)))
+            UpdateUserDTO updateUserDTO){
         String username = jwt.getClaim("preferred_username");
         userService.updateUser(username, updateUserDTO.getStreet(), updateUserDTO.getHouseNumber(),
                 updateUserDTO.getZipCode(), updateUserDTO.getCity(), updateUserDTO.getCurrency());
@@ -150,6 +183,19 @@ public class UserResource {
     @GET
     @Path("/details")
     @Produces(MediaType.TEXT_HTML)
+    @Operation(
+            summary = "Get user details",
+            description = "Returns a detailed HTML page with user information."
+    )
+    @APIResponse(
+            responseCode = "200",
+            description = "User details page returned",
+            content = @Content(mediaType = MediaType.TEXT_HTML)
+    )
+    @APIResponse(
+            responseCode = "401",
+            description = "Unauthorized, only users can access this"
+    )
     public Response getUserDetails(){
         String username = jwt.getClaim("preferred_username");
         User user = userService.getUser(username);

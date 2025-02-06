@@ -13,14 +13,19 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequestScoped
 @Path("/cart")
 @RolesAllowed("user")
+@Tag(name = "Cart", description = "Operations related to the user's shopping cart.")
 public class CartResource {
     @Inject
     CartService cartService;
@@ -30,6 +35,10 @@ public class CartResource {
     Template checkoutUser;
 
     @POST
+    @Operation(
+            summary = "Create a new cart",
+            description = "Creates a new shopping cart for the authenticated user if it does not already exist."
+    )
     public void createCart() {
         String username = jwt.getClaim("preferred_username");
         if (cartService.cartExists(username)){
@@ -38,7 +47,16 @@ public class CartResource {
     }
 
     @PATCH
-    public void addToCart(AddArticleDTO addArticleDTO) {
+    @Operation(
+            summary = "Add an article to the cart",
+            description = "Adds a specified quantity of an article to the user's shopping cart."
+    )
+    public void addToCart(@RequestBody(
+            description = "Details of the article to add",
+            required = true,
+            content = @Content(schema = @Schema(implementation = AddArticleDTO.class))
+    )
+            AddArticleDTO addArticleDTO) {
         String username = jwt.getClaim("preferred_username");
         cartService.addArticleToCart(username, addArticleDTO.articleId(), addArticleDTO.quantity());
     }
@@ -50,6 +68,16 @@ public class CartResource {
 
     @GET
     @Produces(MediaType.TEXT_HTML)
+    @Operation(
+            summary = "Get checkout page",
+            description = "Returns the HTML checkout page with a list of articles in the user's cart."
+    )
+    @APIResponse(
+            responseCode = "200",
+            description = "Checkout page returned",
+            content = @Content(mediaType = MediaType.TEXT_HTML)
+    )
+    @APIResponse(responseCode = "401", description = "Unauthorized, only users can access this")
     public Response getCheckoutpage(){
         List<ArticleCartDTO> articlesInCart = getCart().articleIdAndQuantity().entrySet().stream()
                 .map(entry -> {
@@ -64,6 +92,10 @@ public class CartResource {
 
     @POST
     @Path("/checkout")
+    @Operation(
+            summary = "Checkout the cart",
+            description = "Finalizes the shopping cart, processing the order."
+    )
     public void checkOut(){
         String username = jwt.getClaim("preferred_username");
         cartService.checkoutCart(username);
