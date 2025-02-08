@@ -1,5 +1,6 @@
 package de.hsos.shared;
 
+import de.hsos.acl.ArticleServiceAdapter;
 import de.hsos.article.control.ArticleService;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
@@ -30,8 +31,6 @@ public class IndexResource {
     @Inject
     @RestClient
     KeycloakAPI keycloakAPI;
-    @Inject
-    ArticleService articleService;
 
     @GET
     @Produces(MediaType.TEXT_HTML)
@@ -48,7 +47,7 @@ public class IndexResource {
             @Parameter(description = "Page number for pagination", example = "1") @QueryParam("page") @DefaultValue("1") int page,
             @Parameter(description = "Number of articles per page", example = "9")@QueryParam("pageSize") @DefaultValue("9") int pageSize
     ) {
-        List<ArticleDTO> articles = articleService.getArticles().stream().map(ArticleConverter::articleToArticleDTO).toList();
+        List<ArticleDTO> articles = ArticleServiceAdapter.getArticles();
         List<ArticleDTO> pagedArticles = PagingService.getPagedArticleList(page, pageSize, articles);
         TemplateInstance indexInstance = index.data("articles", pagedArticles);
         return Response.ok(indexInstance).type(MediaType.TEXT_HTML).build();

@@ -1,6 +1,6 @@
 package de.hsos.user.boundary;
 
-import de.hsos.user.boundary.acl.ExchangeRateAdapter;
+import de.hsos.acl.ExchangeRateAdapter;
 
 public class ExchangeRateService {
 

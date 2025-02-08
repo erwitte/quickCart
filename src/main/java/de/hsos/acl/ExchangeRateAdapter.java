@@ -1,4 +1,4 @@
-package de.hsos.user.boundary.acl;
+package de.hsos.acl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

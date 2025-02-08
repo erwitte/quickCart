@@ -1,5 +1,6 @@
 package de.hsos.user.boundary;
 
+import de.hsos.acl.ArticleServiceAdapter;
 import de.hsos.article.control.ArticleService;
 import de.hsos.article.entity.Article;
 import de.hsos.shared.ArticleDTO;
@@ -52,8 +53,6 @@ public class UserResource {
     @Inject
     JsonWebToken jwt;
     @Inject
-    ArticleService articleService;
-    @Inject
     UserService userService;
     double exchangeRate;
 
@@ -64,17 +63,17 @@ public class UserResource {
     @APIResponse(responseCode = "200", description = "Articles returned successfully")
     @APIResponse(responseCode = "401", description = "Unauthorized, only users can access this")
     public Response searchArticles(@Parameter(description = "Article name to search for", required = true)
-            @QueryParam("article") String article) {
+            @QueryParam("article") String heading) {
         String username = jwt.getClaim("preferred_username");
         User user = userService.getUser(username);
-        List<ArticleDTO> articleList = adjustArticleListToExchaneRate(user.getCurrency(), articleService.getArticlesByHeading(article));
+        List<ArticleDTO> articleList = adjustArticleListToExchaneRate(user.getCurrency(), ArticleServiceAdapter.getArticleByHeading(heading));
         TemplateInstance indexUserInstance = indexUser.data("username", username)
                                                         .data("articles", articleList)
                                                                 .data("currency", user.getCurrency());
         return Response.ok(indexUserInstance.render()).type(MediaType.TEXT_HTML).build();
     }
 
-    private List<ArticleDTO> adjustArticleListToExchaneRate(String currency, List<Article> articles) {
+    private List<ArticleDTO> adjustArticleListToExchaneRate(String currency, List<ArticleDTO> articles) {
         exchangeRate = ExchangeRateService.getExchangeRate(currency);
         return articles.stream()
                 .map(article -> new ArticleDTO(
@@ -112,7 +111,7 @@ public class UserResource {
     ){
         String username = jwt.getClaim("preferred_username");
         User user = userService.getUser(username);
-        List<ArticleDTO> articleList = adjustArticleListToExchaneRate(user.getCurrency(), articleService.getArticles());
+        List<ArticleDTO> articleList = adjustArticleListToExchaneRate(user.getCurrency(), ArticleServiceAdapter.getArticles());
         List<ArticleDTO> pagedArticleList = Collections.emptyList();
         try {
             pagedArticleList = PagingService.getPagedArticleList(page, pageSize, articleList);
@@ -121,7 +120,6 @@ public class UserResource {
         }
 
         if (username == null) {
-            // Handle the case where the claim is missing
             return Response.status(Response.Status.UNAUTHORIZED).entity("Username not found in token").build();
         }
         TemplateInstance indexUserInstance = indexUser.data("username", username)

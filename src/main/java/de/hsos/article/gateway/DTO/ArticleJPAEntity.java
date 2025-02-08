@@ -11,7 +11,7 @@ import java.util.List;
 public class ArticleJPAEntity extends PanacheEntity {
     public String heading;
     public double price;
-    @Lob
+    @Column(name = "image", columnDefinition = "BYTEA")
     public byte[] image;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     public List<RatingJPAEntity> ratings = new ArrayList<>();

@@ -1,5 +1,6 @@
 package de.hsos.admin.boundary;
 
+import de.hsos.acl.ArticleServiceAdapter;
 import de.hsos.article.control.ArticleService;
 import de.hsos.article.entity.Article;
 import de.hsos.shared.ArticleConverter;
@@ -28,8 +29,6 @@ import java.util.List;
 @Tag(name = "Admin", description = "Admin operations for managing articles and file uploads.")
 public class AdminResource {
     @Inject
-    ArticleService articleService;
-    @Inject
     Template fileUpload;
     @Inject
     Template indexAdmin;
@@ -53,7 +52,7 @@ public class AdminResource {
             @QueryParam("pageSize") @DefaultValue("9") int pageSize
     ){
         String username = jwt.getClaim("preferred_username");
-        List<ArticleDTO> articles = articleService.getArticles().stream().map(ArticleConverter::articleToArticleDTO).toList();
+        List<ArticleDTO> articles = ArticleServiceAdapter.getArticles();
         List<ArticleDTO> pagedArticles = PagingService.getPagedArticleList(page, pageSize, articles);
         TemplateInstance indexAdminInstance = indexAdmin.data("username", username)
                                                         .data("articles", pagedArticles);

@@ -14,7 +14,7 @@ public class PagingService {
         int fromIndex = (page - 1) * pageSize;
         int toIndex = Math.min(fromIndex + pageSize, articles.size());
         if (fromIndex >= articles.size()) {
-            return Collections.emptyList(); // Return empty list if page exceeds available items
+            return Collections.emptyList(); // return empty list if page exceeds available items
         }
 
         return articles.subList(fromIndex, toIndex);
