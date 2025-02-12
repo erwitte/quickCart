@@ -1,8 +1,6 @@
 package de.hsos.user.boundary;
 
 import de.hsos.acl.ArticleServiceAdapter;
-import de.hsos.article.control.ArticleService;
-import de.hsos.article.entity.Article;
 import de.hsos.shared.ArticleDTO;
 import de.hsos.shared.PagingService;
 import de.hsos.user.boundary.DTO.*;

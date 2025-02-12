@@ -41,7 +41,7 @@ public class CartResource {
     )
     public void createCart() {
         String username = jwt.getClaim("preferred_username");
-        if (cartService.cartExists(username)){
+        if (!cartService.cartExists(username)){
             cartService.createCart(username);
         }
     }

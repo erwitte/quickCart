@@ -40,7 +40,7 @@ public class CartRepository implements CartService, PanacheRepository<CartJPAEnt
 
     @Override
     public boolean cartExists(String username){
-        return find("username", username) != null;
+        return find("username", username) == null;
     }
 
     @Override
