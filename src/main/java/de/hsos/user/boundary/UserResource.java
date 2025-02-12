@@ -17,6 +17,9 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
+import org.eclipse.microprofile.faulttolerance.Retry;
+import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -60,6 +63,9 @@ public class UserResource {
     @Operation(summary = "Search for articles", description = "Returns a list of articles that match the search query.")
     @APIResponse(responseCode = "200", description = "Articles returned successfully")
     @APIResponse(responseCode = "401", description = "Unauthorized, only users can access this")
+    @Retry(maxRetries = 3, delay = 500)
+    @Timeout(2000)
+    @CircuitBreaker(requestVolumeThreshold = 4, failureRatio = 0.5, delay = 5000)
     public Response searchArticles(@Parameter(description = "Article name to search for", required = true)
             @QueryParam("article") String heading) {
         String username = jwt.getClaim("preferred_username");
@@ -88,6 +94,9 @@ public class UserResource {
     @Operation(summary = "Get adjusted price", description = "Returns the price converted to the user's currency.")
     @APIResponse(responseCode = "200", description = "Converted price returned")
     @APIResponse(responseCode = "401", description = "Unauthorized, only users can access this")
+    @Retry(maxRetries = 3, delay = 500)
+    @Timeout(2000)
+    @CircuitBreaker(requestVolumeThreshold = 4, failureRatio = 0.5, delay = 5000)
     public Response getCorrectPrice(@Parameter(description = "Original price", required = true)
             @QueryParam("price") double price){
         String username = jwt.getClaim("preferred_username");
@@ -103,6 +112,9 @@ public class UserResource {
     @Produces(MediaType.TEXT_HTML)
     @Operation(summary = "Get user index page", description = "Returns the user dashboard with paginated articles.")
     @APIResponse(responseCode = "200", description = "User dashboard returned")
+    @Retry(maxRetries = 3, delay = 500)
+    @Timeout(2000)
+    @CircuitBreaker(requestVolumeThreshold = 4, failureRatio = 0.5, delay = 5000)
     public Response indexUser(
             @Parameter(description = "Page number for pagination", example = "1") @QueryParam("page") @DefaultValue("1") int page,
             @Parameter(description = "Number of articles per page", example = "9") @QueryParam("pageSize") @DefaultValue("9") int pageSize
@@ -130,6 +142,9 @@ public class UserResource {
     @Path("/logout")
     @Operation(summary = "Logout user", description = "Logs out the user from Keycloak.")
     @APIResponse(responseCode = "200", description = "User logged out successfully")
+    @Retry(maxRetries = 3, delay = 500)
+    @Timeout(2000)
+    @CircuitBreaker(requestVolumeThreshold = 4, failureRatio = 0.5, delay = 5000)
     public Response logOutUser(@RequestBody(description = "Refresh token for logout", required = true,
             content = @Content(schema = @Schema(implementation = RefreshTokenDTO.class)))
             RefreshTokenDTO refreshTokenDTO){
@@ -142,6 +157,9 @@ public class UserResource {
     @Operation(summary = "Create a new user", description = "Registers a new user in Keycloak and the application database.")
     @APIResponse(responseCode = "201", description = "User created successfully")
     @APIResponse(responseCode = "400", description = "Bad request, missing data")
+    @Retry(maxRetries = 3, delay = 500)
+    @Timeout(2000)
+    @CircuitBreaker(requestVolumeThreshold = 4, failureRatio = 0.5, delay = 5000)
     public Response createUser(@RequestBody(description = "New user details", required = true,
             content = @Content(schema = @Schema(implementation = CreateUserDTO.class)))
             CreateUserDTO newUser) {
@@ -159,6 +177,9 @@ public class UserResource {
     @Path("/settings")
     @Operation(summary = "Get user settings", description = "Returns the user settings page.")
     @APIResponse(responseCode = "200", description = "Settings page returned")
+    @Retry(maxRetries = 3, delay = 500)
+    @Timeout(2000)
+    @CircuitBreaker(requestVolumeThreshold = 4, failureRatio = 0.5, delay = 5000)
     public Response settings(){
         TemplateInstance settingsInstance = settingsUser.instance();
         return Response.ok(settingsInstance.render()).type(MediaType.TEXT_HTML).build();
@@ -168,6 +189,9 @@ public class UserResource {
     @Path("/settings")
     @Operation(summary = "Update user data", description = "Updates the user's address and currency settings.")
     @APIResponse(responseCode = "204", description = "User data updated successfully")
+    @Retry(maxRetries = 3, delay = 500)
+    @Timeout(2000)
+    @CircuitBreaker(requestVolumeThreshold = 4, failureRatio = 0.5, delay = 5000)
     public void updateUserData(@RequestBody(description = "Updated user details", required = true,
             content = @Content(schema = @Schema(implementation = UpdateUserDTO.class)))
             UpdateUserDTO updateUserDTO){
@@ -192,6 +216,9 @@ public class UserResource {
             responseCode = "401",
             description = "Unauthorized, only users can access this"
     )
+    @Retry(maxRetries = 3, delay = 500)
+    @Timeout(2000)
+    @CircuitBreaker(requestVolumeThreshold = 4, failureRatio = 0.5, delay = 5000)
     public Response getUserDetails(){
         String username = jwt.getClaim("preferred_username");
         User user = userService.getUser(username);
