@@ -125,7 +125,8 @@
         <input id="query" type="text" placeholder="Search articles...">
         <button onclick="search()">search</button>
     </div>
-    <input type="number" id="articleId">
+    <input type="number" id="articleId" placeholder="id">
+    <input type="number" min="1" id="qunatityId" placeholder="quantity">
     <button id="articleIdSendBtn" onclick="addArticleToCart()">add to cart</button>
 
     <div class="navigation">
@@ -263,7 +264,9 @@
 
     function addArticleToCart(){
         const articleId = document.getElementById("articleId").value;
+        const articleQuantity = document.getElementById("qunatityId").value;
         document.getElementById("articleId").value = "";
+        document.getElementById("qunatityId").value = "";
         const storedData = localStorage.getItem("json");
         const json = JSON.parse(storedData);
 
@@ -279,7 +282,7 @@
                 if (response.status === 200){
                     const data = {
                       "articleId": articleId,
-                      "quantity": 1
+                      "quantity": articleQuantity
                     };
                     fetch("/cart", {
                         method: "PATCH",

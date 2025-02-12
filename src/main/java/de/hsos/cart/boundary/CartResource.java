@@ -12,6 +12,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.faulttolerance.*;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -39,6 +40,9 @@ public class CartResource {
             summary = "Create a new cart",
             description = "Creates a new shopping cart for the authenticated user if it does not already exist."
     )
+    @Retry(maxRetries = 3, delay = 500) // Retries 3 times with 500ms delay between attempts
+    @Timeout(2000) // Timeout after 2 seconds
+    @CircuitBreaker(requestVolumeThreshold = 4, failureRatio = 0.5, delay = 5000) // Breaker trips if 50% of 4 requests fail, waits 5s
     public void createCart() {
         String username = jwt.getClaim("preferred_username");
         if (!cartService.cartExists(username)){
@@ -51,12 +55,15 @@ public class CartResource {
             summary = "Add an article to the cart",
             description = "Adds a specified quantity of an article to the user's shopping cart."
     )
+    @Retry(maxRetries = 3, delay = 500)
+    @Timeout(2000)
+    @CircuitBreaker(requestVolumeThreshold = 4, failureRatio = 0.5, delay = 5000)
     public void addToCart(@RequestBody(
             description = "Details of the article to add",
             required = true,
             content = @Content(schema = @Schema(implementation = AddArticleDTO.class))
     )
-            AddArticleDTO addArticleDTO) {
+                          AddArticleDTO addArticleDTO) {
         String username = jwt.getClaim("preferred_username");
         cartService.addArticleToCart(username, addArticleDTO.articleId(), addArticleDTO.quantity());
     }
@@ -78,16 +85,15 @@ public class CartResource {
             content = @Content(mediaType = MediaType.TEXT_HTML)
     )
     @APIResponse(responseCode = "401", description = "Unauthorized, only users can access this")
+    @Retry(maxRetries = 3, delay = 500)
+    @Timeout(3000) // Slightly longer timeout for loading UI elements
+    @CircuitBreaker(requestVolumeThreshold = 4, failureRatio = 0.5, delay = 5000)
     public Response getCheckoutpage(){
         List<ArticleCartDTO> articlesInCart = getCart().articleIdAndQuantity().entrySet().stream()
-                .map(entry -> {
-                    long articleId = entry.getKey();
-                    int quantity = entry.getValue();
-                    return new ArticleCartDTO(articleId, quantity);
-                })
+                .map(entry -> new ArticleCartDTO(entry.getKey(), entry.getValue()))
                 .toList();
         TemplateInstance checkOutInstance = checkoutUser.data("articles", articlesInCart);
-       return Response.ok(checkOutInstance).build();
+        return Response.ok(checkOutInstance).build();
     }
 
     @POST
@@ -96,6 +102,9 @@ public class CartResource {
             summary = "Checkout the cart",
             description = "Finalizes the shopping cart, processing the order."
     )
+    @Retry(maxRetries = 3, delay = 500)
+    @Timeout(2000)
+    @CircuitBreaker(requestVolumeThreshold = 4, failureRatio = 0.5, delay = 5000)
     public void checkOut(){
         String username = jwt.getClaim("preferred_username");
         cartService.checkoutCart(username);
